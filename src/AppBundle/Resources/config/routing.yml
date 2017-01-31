@@ -1,0 +1,6 @@
+## Plantilla YAML
+#  para abstraer todas las rutas del proyecto
+
+pruebas_index:
+  path     : /pruebas/index
+  defaults : { _controller: AppBundle:Pruebas:index }
