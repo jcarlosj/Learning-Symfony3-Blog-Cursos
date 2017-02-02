@@ -2,6 +2,11 @@
 #  para abstraer todas las rutas del proyecto
 
 pruebas_index:
-  path     : /pruebas/{name}/{surname}                  # Pasa dos parámetros a la ruta
-  #                         Bundle:Controlador:Método, Parámetro por defecto para 'name', Parámetro por defecto para 'surname'
-  defaults : { _controller: AppBundle:Pruebas:index, name:"1er parámetro por defecto", surname:"2do parámetro por defecto" }
+  path     : /pruebas/{name}/{page}                  # Pasa dos parámetros a la ruta
+  methods  : [ GET ] # Podemos indicarle el tipo de método por el cual queremos pasar el o los parámetros al controlador
+  # Bundle:Controlador:Método, 1re Parámetro por defecto para 'name', Parámetro por defecto para 'page'
+  defaults : { _controller: AppBundle:Pruebas:index, name:"1er parámetro por defecto", page:1 }
+  requirements :
+    # Con una expresión regular le indicamos reglas a cada parámetro
+    name: \w+  # Solo valores Alfanuméricos
+    page: \d+  # Solo valores Enteros
