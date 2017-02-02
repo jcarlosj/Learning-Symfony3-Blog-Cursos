@@ -3,4 +3,5 @@
 
 pruebas_index:
   path     : /pruebas/{name}/{surname}                  # Pasa dos parámetros a la ruta
-  defaults : { _controller: AppBundle:Pruebas:index }
+  #                         Bundle:Controlador:Método, Parámetro por defecto para 'name', Parámetro por defecto para 'surname'
+  defaults : { _controller: AppBundle:Pruebas:index, name:"1er parámetro por defecto", surname:"2do parámetro por defecto" }
