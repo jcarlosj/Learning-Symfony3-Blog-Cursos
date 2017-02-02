@@ -13,7 +13,9 @@ class PruebasController extends Controller {
   public function indexAction( Request $request, $name, $page ) {
 
     # Redireccion al homepage
-    return $this -> redirect( $this -> generateUrl( 'homepage' ) );
+    return $this -> redirect(
+      $this -> container -> get( 'router' ) -> getContext() -> getBaseUrl() . '/hello-world?saludo=Hola'
+    );
 
     // replace this example code with whatever you need
     return $this->render('AppBundle:Pruebas:index.html.twig', array(
