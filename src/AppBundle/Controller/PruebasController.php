@@ -10,11 +10,11 @@ use Symfony\Component\HttpFoundation\Request;               # Http
 # Definición de la clase
 class PruebasController extends Controller {
 
-  public function indexAction(Request $request) {
+  public function indexAction( Request $request, $name, $surname ) {
 
     // replace this example code with whatever you need
     return $this->render('AppBundle:Pruebas:index.html.twig', array(
-      'texto' => 'indexAction(): envia este mensaje desde su controlador'
+      'texto' => 'indexAction(): ' .$name. ' - ' .$surname
     ));
   }
 

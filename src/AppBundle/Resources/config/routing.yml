@@ -2,5 +2,5 @@
 #  para abstraer todas las rutas del proyecto
 
 pruebas_index:
-  path     : /pruebas/index
+  path     : /pruebas/{name}/{surname}                  # Pasa dos parámetros a la ruta
   defaults : { _controller: AppBundle:Pruebas:index }
