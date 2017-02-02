@@ -12,6 +12,9 @@ class PruebasController extends Controller {
 
   public function indexAction( Request $request, $name, $page ) {
 
+    # Redireccion al homepage
+    return $this -> redirect( $this -> generateUrl( 'homepage' ) );
+
     // replace this example code with whatever you need
     return $this->render('AppBundle:Pruebas:index.html.twig', array(
       'texto' => 'indexAction(): ' .$name. ' - ' .$page
