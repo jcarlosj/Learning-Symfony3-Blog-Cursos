@@ -14,7 +14,7 @@ class PruebasController extends Controller {
 
     # Redireccion al homepage
     return $this -> redirect(
-      $request -> getBaseUrl() . '/hello-world?saludo=Hola'
+      $request -> getBasePath() . '/hello-world?saludo=Hola'
     );
 
     // replace this example code with whatever you need
