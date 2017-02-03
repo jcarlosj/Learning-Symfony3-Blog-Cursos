@@ -13,9 +13,13 @@ class PruebasController extends Controller {
   public function indexAction( Request $request, $name, $page ) {
 
     # Redireccion al homepage
-    return $this -> redirect(
+    /*return $this -> redirect(
       $request -> getBasePath() . '/hello-world?saludo=Hola'
-    );
+    );*/
+
+    # Recoger variables tipo GET (a através de la URL)
+    var_dump( $request -> query -> get( 'hola' ) );
+    die();
 
     // replace this example code with whatever you need
     return $this->render('AppBundle:Pruebas:index.html.twig', array(
