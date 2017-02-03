@@ -3,7 +3,7 @@
 
 pruebas_index:
   path     : /pruebas/{lang}/{name}/{page}                  # Pasa dos parámetros a la ruta
-  methods  : [ GET ] # Podemos indicarle el tipo de método por el cual queremos pasar el o los parámetros al controlador
+  methods  : [ GET, POST ] # Podemos indicarle el tipo de método por el cual queremos pasar el o los parámetros al controlador
   # Bundle:Controlador:Método, 1re Parámetro por defecto para 'name', Parámetro por defecto para 'page'
   defaults : { _controller: AppBundle:Pruebas:index, lang: es, name:"1er parámetro por defecto", page:1 }
   requirements :
