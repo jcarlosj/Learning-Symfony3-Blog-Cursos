@@ -1,2 +1,6 @@
 {# Plantilla Twig #}
-{{ texto }}
+{% extends '::layout.html.twig' %}    {# Importamos la plantilla que vamos a usar #}
+{% block container %}                 {# Abre un bloque () #}
+  {{ parent() }}                      {# Permite ver valor por defecto (si lo quitamos lo sobre-escribe ) #}
+  {{ texto }}                         {# Valor que viene desde el controlador #}
+{% endblock %}                        {# Cierra un bloque #}

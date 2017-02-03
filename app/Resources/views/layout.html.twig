@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Nuevo Layout!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('eye.ico') }}" />
+        <style media="screen">
+          .container {
+            margin: auto;
+            padding: 8px;
+            background: #eee;
+            border: 1px solid black;
+            width: 85%;
+            height: 300px;
+          }
+        </style>
+    </head>
+    <body>
+      <div class="container">
+        {% block container %}
+          Contenido por defecto
+        {% endblock %}
+      </div>
+      {% block javascripts %}{% endblock %}
+    </body>
+</html>

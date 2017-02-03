@@ -17,9 +17,9 @@ class PruebasController extends Controller {
       $request -> getBasePath() . '/hello-world?saludo=Hola'
     );*/
 
-    var_dump( $request -> query -> get( 'hola' ) );   # Recoger variables tipo GET (a através de la URL)
+    /*var_dump( $request -> query -> get( 'hola' ) );   # Recoger variables tipo GET (a através de la URL)
     var_dump( $request -> get( 'hola-post' ) );   # Recoger variables tipo GET o POST ('hola-post' es POST)
-    die();
+    die();*/
 
     // replace this example code with whatever you need
     return $this->render('AppBundle:Pruebas:index.html.twig', array(
