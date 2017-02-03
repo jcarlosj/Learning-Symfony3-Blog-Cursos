@@ -1,0 +1,3 @@
+mi_homepage:
+    path:     /
+    defaults: { _controller: MiBundle:Default:index }
