@@ -1,6 +1,6 @@
 mi:
     resource: "@MiBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /mi-bundle
 
 app:
     resource: "@AppBundle/Controller/"
