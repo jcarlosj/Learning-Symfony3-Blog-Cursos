@@ -29,4 +29,14 @@
     {% endfor %}
     </ul>
   {% endif %}
+  <hr /> {# Funciones predefinidas en Twig #}
+  <h3>Función Date</h3>
+  {% set fecha = date() %}      {# Fecha actual #}
+  {{ fecha .date }}<br />
+  {{ dump( fecha ) }}
+  <hr />
+  {% set fecha = date( '-10 days', 'America/Bogota' ) %}      {# Fecha actual menos 10 días y TimeZone: Bogotá, Colombia #}
+  {{ fecha .date }}<br />
+  {{ dump( fecha ) }}
+
 {% endblock %}                          {# Cierra un bloque #}
