@@ -38,5 +38,9 @@
   {% set fecha = date( '-10 days', 'America/Bogota' ) %}      {# Fecha actual menos 10 días y TimeZone: Bogotá, Colombia #}
   {{ fecha .date }}<br />
   {{ dump( fecha ) }}
-
+  <hr />
+  {% include 'AppBundle::pruebas/partial.html.twig' %} {# Incluye una plantilla dentro de la "principal" #}
+  {# include 'AppBundle:pruebas:partial.html.twig'     Equivale a lo mismo que está en la línea anterior #}
+  {# include 'AppBundle::partial.html.twig'            Se puede eliminar la ruta y poner el archivo en la raíz de 'views' #}
+  
 {% endblock %}                          {# Cierra un bloque #}
