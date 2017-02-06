@@ -1,6 +1,32 @@
 {# Plantilla Twig #}
-{% extends '::layout.html.twig' %}    {# Importamos la plantilla que vamos a usar #}
-{% block container %}                 {# Abre un bloque () #}
-  {{ parent() }}                      {# Permite ver valor por defecto (si lo quitamos lo sobre-escribe ) #}
-  {{ texto }}                         {# Valor que viene desde el controlador #}
-{% endblock %}                        {# Cierra un bloque #}
+{% extends '::layout.html.twig' %}      {# Importamos la plantilla que vamos a usar #}
+{% block container %}                   {# Abre un bloque () #}
+  {{ parent() }}                        {# Permite ver valor por defecto (si lo quitamos lo sobre-escribe ) #}
+  {{ texto }}                           {# Valor que viene desde el controlador #}
+  <hr />
+  <h3>{{ titulo_frutas }}</h3>
+  <ul>
+    <li><strong>{{ frutas .manzana }}</strong></li>
+    {% if frutas .manzana == 'golden' %}       {# Condicional #}
+      <li>{{ frutas .naranja }}</li>           {# Accede al valor del item de un array #}
+    {% endif %}
+    {% if frutas .naranja starts with 'n' %}   {# Condicional inicia con #}
+      <li>{{ frutas .naranja }}</li>           {# Accede al valor del item de un array #}
+    {% endif %}
+    {% if frutas .uva ends with 'ena' %}       {# Condicional finaliza con #}
+      <li>{{ frutas .uva }}</li>               {# Accede al valor del item de un array #}
+    {% endif %}
+  </ul>
+  <hr />
+  {% set variable_twig = 'Hola Twig' %}        {# Declara una variable con Twig #}
+  {{ variable_twig }}
+  <hr />
+  <h3>{{ titulo_productos }}</h3>
+  {% if productos | length > 0 %}               {# Condicional, usando el filtro length #}
+    <ul>
+    {% for producto in productos %}             {# Ciclo for para recorrer un array #}
+      <li>{{ producto .nombre }} ( {{ producto .precio }}USD )</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}                          {# Cierra un bloque #}
