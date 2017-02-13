@@ -63,6 +63,6 @@
   {% endfor %}
   <hr />
   <h3>Funciones personalizadas en Twig</h3>
-  <h4>Genera una tabla de 5 x 7</h4>
-  {{ generateTable( 5, 7 ) | raw }} {# Nueva Función Twig personalizada (usamos el filtro raw para que pinte el HTML) #}
-{% endblock %}                          {# Cierra un bloque #}
+  <h4>Genera una tabla de acuerdo a un 'Array' de datos que se le ha pasado como parámetro</h4>
+  {{ generateTable( productos ) | raw }} {# Nueva Función Twig personalizada (usamos el filtro raw para que pinte el HTML) #}
+{% endblock %}                           {# Cierra un bloque #}
