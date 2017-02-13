@@ -30,7 +30,8 @@
     </ul>
   {% endif %}
   <hr /> {# Funciones predefinidas en Twig #}
-  <h3>Función Date</h3>
+  <h3>Funciones predefinidas en Twig</h3>
+  <h4>Función Date</h4>
   {% set fecha = date() %}      {# Fecha actual #}
   {{ fecha .date }}<br />
   {{ dump( fecha ) }}
@@ -42,5 +43,22 @@
   {% include 'AppBundle::pruebas/partial.html.twig' %} {# Incluye una plantilla dentro de la "principal" #}
   {# include 'AppBundle:pruebas:partial.html.twig'     Equivale a lo mismo que está en la línea anterior #}
   {# include 'AppBundle::partial.html.twig'            Se puede eliminar la ruta y poner el archivo en la raíz de 'views' #}
-  
+  <hr />
+  <h4>Números máximos y mínimos en un 'Array'</h4>
+  {% set numeros = [ 45, 90, 34, 13, 2, 31 ] %}
+  {{ dump( numeros ) }}
+  Número máximo: {{ max( numeros ) }} <br />
+  Número mínimo: {{ min( numeros ) }} <br />
+  <h4>Valores aleatorios en un 'Array'</h4>
+  {% set peliculas = [ 'Batman Vs Superman (2016)', 'Inferno (2016)', 'X-Men Apocalypse (2016)', 'Los juegos del hambre (2009)' ] %}
+  {{ random( 1000 ) }} --> Número aleatorio (0 a 1000) <br />
+  {{ random( numeros ) }} --> (Valor aleatorio de un array de 'números enteros' dados) <br />
+  {{ random( peliculas ) }} --> (Valor aleatorio de un array de 'strings' dados) <br />
+  <h4>Manejo de rangos de valores</h4>
+  {% for i in range( 0, 25 ) %}     {# Rango de 0 a 25 #}
+    {{ i }}, &nbsp;
+  {% endfor %}<br />
+  {% for i in range( 0, 25, 3 ) %}  {# Rango de 0 a 25 con salto de 3 en 3 #}
+    {{ i }}, &nbsp;
+  {% endfor %}
 {% endblock %}                          {# Cierra un bloque #}
