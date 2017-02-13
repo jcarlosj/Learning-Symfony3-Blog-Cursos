@@ -61,4 +61,8 @@
   {% for i in range( 0, 25, 3 ) %}  {# Rango de 0 a 25 con salto de 3 en 3 #}
     {{ i }}, &nbsp;
   {% endfor %}
+  <hr />
+  <h3>Funciones personalizadas en Twig</h3>
+  <h4>Genera una tabla de 5 x 7</h4>
+  {{ generateTable( 5, 7 ) | raw }} {# Nueva Función Twig personalizada (usamos el filtro raw para que pinte el HTML) #}
 {% endblock %}                          {# Cierra un bloque #}
