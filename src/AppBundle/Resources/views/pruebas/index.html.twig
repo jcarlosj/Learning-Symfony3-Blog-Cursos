@@ -94,4 +94,11 @@
       {{ name | lower }}, &nbsp;
     {% endfor %}
   </p>
+  <hr />
+  <h3>Filtros personalizados</h3>
+  {% set cadena_para_filtrar = 'Este filtro debe ser capaz de contar las vocales y consonantes de esta cadena de texto' %}
+  <strong>Cadena: </strong>{{ cadena_para_filtrar }}
+  <br />
+  <strong>Vocales: </strong>{{ cadena_para_filtrar | contarVocales }} /
+  <strong>Consonantes: </strong>{{ cadena_para_filtrar | contarConsonantes }}
 {% endblock %}                           {# Cierra un bloque #}
