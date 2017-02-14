@@ -65,4 +65,33 @@
   <h3>Funciones personalizadas en Twig</h3>
   <h4>Genera una tabla de acuerdo a un 'Array' de datos que se le ha pasado como parámetro</h4>
   {{ generateTable( productos ) | raw }} {# Nueva Función Twig personalizada (usamos el filtro raw para que pinte el HTML) #}
+  <hr />
+  <h3>Filtros pre definidos</h3>
+  <p>Podemos encontrar todos los filtros que podemos usar con twig <a href="http://twig.sensiolabs.org/doc/2.x/filters/index.html">aquí</a></p>
+  <h4>Date filter</h4>
+  {% set fecha = date( 'America/Bogota' ) %}
+  <p><strong>Fecha actual: </strong>{{ fecha | date("Y-m-d") }}</p>
+  <h3>Split, Reverse, Upper and Lower filter</h3>
+  <h4>Cadena</h4>
+  {% set cadena = 'Elisa|Juliana|Luisa|Laura|Juliana|Viviana|Juliana' %}
+  <p>{{ cadena }}</p>
+  <h4>Convertir cadena a arreglo</h4>
+  <p>
+  {% set nombres = cadena | split('|') %}
+    {% for name in nombres %}
+      {{ name }}, &nbsp;
+    {% endfor %}
+  </p>
+  <h4>Cada nombre al revés y en mayúscula</h4>
+  <p>
+    {% for name in nombres %}
+      {{ name | reverse | upper  }}, &nbsp;
+    {% endfor %}
+  </p>
+  <h4>Orden inverso y en minúscula</h4>
+  <p>
+    {% for name in nombres | reverse %}
+      {{ name | lower }}, &nbsp;
+    {% endfor %}
+  </p>
 {% endblock %}                           {# Cierra un bloque #}
