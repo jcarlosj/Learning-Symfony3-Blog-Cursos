@@ -2,18 +2,18 @@
   namespace AppBundle\Twig;
 
   use \Twig_Extension;
-  use \Twig_Function_Method;
+  use \Twig_SimpleFunction;
 
   class HelperVistas extends Twig_Extension {
 
     public function getFunctions() {
       return array(
-        'generateTable' => new Twig_Function_Method( $this, 'generateTable' )
+        new Twig_SimpleFunction( 'generateTable', array( $this , 'generateDataTable' ) )
       );
     }
 
-    # Función Twig, para generar una tabla en la vista
-    public function generateTable( $resultSet ) {
+    # Método Twig, para generar una tabla en la vista
+    public function generateDataTable( $resultSet ) {
 
       # echo '<pre>'; print_r( $resultSet ); echo '</pre>'; exit();
 
