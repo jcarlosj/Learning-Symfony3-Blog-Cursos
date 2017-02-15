@@ -1,4 +1,4 @@
-AppBundle\Entity\Productos:
+AppBundle\Entity\Producto:
     type: entity
     table: productos
     id:

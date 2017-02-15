@@ -1,4 +1,4 @@
-AppBundle\Entity\Usuarios:
+AppBundle\Entity\Usuario:
     type: entity
     table: usuarios
     uniqueConstraints:
