@@ -7,6 +7,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; # Router
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;   # Controller
 use Symfony\Component\HttpFoundation\Request;               # Http
 
+# Importar archivos de la aplicación
+use \AppBundle\Entity\Curso;
+
 # Definición de la clase
 class PruebasController extends Controller {
 
@@ -33,6 +36,35 @@ class PruebasController extends Controller {
       'titulo_frutas' => 'Listado de frutas',
       'frutas'    => $frutas
     ));
+  }
+
+  # Inserta nuevos cursos
+  public function createAction() {
+    # Instancia y asignación de valores a un curso nuevo
+    $curso = new Curso();
+    $curso -> setTitulo( 'Curso de Frivolité' );
+    $curso -> setDescripcion( 'Curso completo, fácil y rápido de frivolidad' );
+    $curso -> setPrecio( 120 );
+
+    # Guardamos los datos dentro de la entidad del ORM Doctrine
+    #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+    $em = $this -> getDoctrine() -> getManager();
+    $em -> persist( $curso );
+
+    # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
+    $flush = $em -> flush();
+
+    # Validamos si el registro se ha realizado con éxito
+    if( $flush != null ) {
+      echo 'El curso no se ha creado bien';
+    }
+    else {
+      echo 'El curso se ha creado correctamente';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
   }
 
 }

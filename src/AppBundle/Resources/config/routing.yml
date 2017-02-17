@@ -12,3 +12,7 @@ pruebas_index:
     page : "^[1-9][0-9]?$|^100$"  # Solo valores Enteros entre 1 y 99
     # page: "^0*(?:[1-9][0-9]?|100)$"  # Solo valores Enteros entre 0001 y 00099
     lang : es|en|fr               # opcion1 o opcion2 o opcion3
+
+pruebas_create:
+    path : /pruebas/create
+    defaults : { _controller: AppBundle:Pruebas:create }
