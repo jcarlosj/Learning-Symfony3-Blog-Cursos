@@ -67,4 +67,20 @@ class PruebasController extends Controller {
 
   }
 
+  # Extrae datos de nuestra base de datos
+  public function readAction() {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+    $cursos = $cursosRepository -> findAll();                       # Obtenemos todos los cursos
+
+    # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
+    foreach ( $cursos as $curso ) {
+      echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
 }
