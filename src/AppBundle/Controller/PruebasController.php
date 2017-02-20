@@ -113,4 +113,28 @@ class PruebasController extends Controller {
     die();
   }
 
+  # Elimina datos de nuestra base de datos
+  public function deleteAction( $id ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+
+    $curso = $cursosRepository -> find( $id );                     # Buscamos por ID
+    $em -> remove( $curso );                                       # Elimina registro
+
+    # Volcamos los cambios en la entidad del ORM Doctrine a la base de datos
+    $flush = $em -> flush();
+
+    # Validamos si el registro se ha realizado con éxito
+    if( $flush != null ) {
+      echo 'El curso no se ha eliminado bien';
+    }
+    else {
+      echo 'El curso se ha eliminado correctamente';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
 }

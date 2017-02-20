@@ -24,3 +24,7 @@ pruebas_read:
 pruebas_update:
     path : /pruebas/update/{id}/{titulo}/{descripcion}/{precio}
     defaults : { _controller: AppBundle:Pruebas:update }
+
+pruebas_delete:
+    path : /pruebas/delete/{id}
+    defaults : { _controller: AppBundle:Pruebas:delete }
