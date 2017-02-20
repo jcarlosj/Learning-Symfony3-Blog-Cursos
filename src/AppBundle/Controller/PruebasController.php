@@ -83,4 +83,34 @@ class PruebasController extends Controller {
 
   }
 
+  # Actualiza datos de nuestra base de datos
+  public function updateAction( $id, $titulo, $descripcion, $precio ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+
+    $curso = $cursosRepository -> find( $id );                      # Buscamos por ID
+
+    # Actualizamos los valores en la entidad
+    $curso -> setTitulo( $titulo );
+    $curso -> setDescripcion( $descripcion );
+    $curso -> setPrecio( $precio );
+
+    # Persistimos el objeto
+    $em -> persist( $curso );
+
+    # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
+    $flush = $em -> flush();
+
+    # Validamos si el registro se ha realizado con éxito
+    if( $flush != null ) {
+      echo 'El curso no se ha actualizado bien';
+    }
+    else {
+      echo 'El curso se ha actualizado correctamente';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+  }
+
 }

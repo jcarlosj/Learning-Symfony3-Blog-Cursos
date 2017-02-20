@@ -20,3 +20,7 @@ pruebas_create:
 pruebas_read:
     path : /pruebas/read
     defaults : { _controller: AppBundle:Pruebas:read }
+
+pruebas_update:
+    path : /pruebas/update/{id}/{titulo}/{descripcion}/{precio}
+    defaults : { _controller: AppBundle:Pruebas:update }
