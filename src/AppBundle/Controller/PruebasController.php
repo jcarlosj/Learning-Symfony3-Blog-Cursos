@@ -90,6 +90,13 @@ class PruebasController extends Controller {
 
     $curso = $cursosRepository -> find( $id );                      # Buscamos por ID
 
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el id: ' .$id. ' no existe'
+        );
+    }
+
     # Actualizamos los valores en la entidad
     $curso -> setTitulo( $titulo );
     $curso -> setDescripcion( $descripcion );
@@ -118,7 +125,16 @@ class PruebasController extends Controller {
     $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
 
+    # Método dinámico para encontrar un solo atributo de la entidad (campo de la tabla) basado en un valor de columna
     $curso = $cursosRepository -> find( $id );                     # Buscamos por ID
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el id: ' .$id. ' no existe'
+        );
+    }
+
     $em -> remove( $curso );                                       # Elimina registro
 
     # Volcamos los cambios en la entidad del ORM Doctrine a la base de datos
@@ -131,6 +147,95 @@ class PruebasController extends Controller {
     else {
       echo 'El curso se ha eliminado correctamente';
     }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
+  # Extrae el primer curso con el precio indicado.
+  public function readByPriceAction( $precio ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+    # Método dinámico para encontrar un solo atributo de la entidad (campo de la tabla) basado en un valor de columna
+    $curso = $cursosRepository -> findOneByPrecio( $precio );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el precio: ' .$precio. ' no existe'
+        );
+    }
+
+    echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
+  # Extrae el listado de todos los cursos con el precio indicado.
+  public function readByPricesAction( $precio ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $cursos = $cursosRepository -> findBy( array( 'precio' => $precio ) );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$cursos ) {
+        throw $this -> createNotFoundException(
+            'Los cursos con el precio: ' .$precio. ' no existen'
+        );
+    }
+
+    # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
+    foreach ( $cursos as $curso ) {
+      echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
+  # Extrae el curso con el título indicado.
+  public function readByTitleAction( $titulo ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $curso = $cursosRepository -> findOneByTitulo( $titulo );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el título: ' .$titulo. ' no existe'
+        );
+    }
+
+    echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
+  # Extrae el curso con el título y precio indicados.
+  public function readByTitleAndPriceAction( $titulo, $precio ) {
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $curso = $cursosRepository -> findOneBy(
+      array('titulo' => $titulo, 'precio' => $precio )
+    );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el título: ' .$titulo. ' y precio: ' .$precio. ' no existe'
+        );
+    }
+
+    echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
 
     # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
     die();

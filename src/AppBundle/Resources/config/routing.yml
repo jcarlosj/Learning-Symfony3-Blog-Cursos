@@ -28,3 +28,19 @@ pruebas_update:
 pruebas_delete:
     path : /pruebas/delete/{id}
     defaults : { _controller: AppBundle:Pruebas:delete }
+
+pruebas_read_price:
+    path : /pruebas/read/price/{precio}
+    defaults : { _controller: AppBundle:Pruebas:readByPrice }
+
+pruebas_read_prices:
+    path : /pruebas/read/prices/{precio}
+    defaults : { _controller: AppBundle:Pruebas:readByPrices }
+
+pruebas_read_title:
+    path : /pruebas/read/title/{titulo}
+    defaults : { _controller: AppBundle:Pruebas:readByTitle }
+
+pruebas_read_title_and_price:
+    path : /pruebas/read/title-price/{titulo}/{precio}
+    defaults : { _controller: AppBundle:Pruebas:readByTitleAndPrice }    
