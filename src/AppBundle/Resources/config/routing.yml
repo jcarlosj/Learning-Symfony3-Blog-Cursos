@@ -43,4 +43,8 @@ pruebas_read_title:
 
 pruebas_read_title_and_price:
     path : /pruebas/read/title-price/{titulo}/{precio}
-    defaults : { _controller: AppBundle:Pruebas:readByTitleAndPrice }    
+    defaults : { _controller: AppBundle:Pruebas:readByTitleAndPrice }
+
+pruebas_native:
+    path : /pruebas/native/
+    defaults : { _controller: AppBundle:Pruebas:nativeSql }

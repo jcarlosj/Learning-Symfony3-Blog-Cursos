@@ -242,4 +242,27 @@ class PruebasController extends Controller {
 
   }
 
+  # Muestra resultados usando SQL Nativo
+  public function nativeSqlAction() {
+    $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+    $db = $em -> getConnection();                     # Obtenemos la conexión a la BD
+
+    $query = 'select * from cursos';                  # Definimos la "Query" (Consulta)
+    $stmt = $db -> prepare( $query );                 # Preparamos la Consulta.
+    $params = array();                                # Definimos los parámetros (vacio en este caso)
+    $stmt -> execute( $params );                      # Ejecutamos la Consulta contra la BD
+
+    $cursos = $stmt -> fetchAll();                    # Del Resultado extraemos todos los registros (En un 'Array' de 'Arrays')
+
+    # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
+    foreach ( $cursos as $curso ) {
+      # Aqui no vamos a desplegar los datos como objetos, si no como 'Array'.
+      echo $curso[ 'titulo' ]. '<br />' .$curso[ 'descripcion' ]. '<br />' .$curso[ 'precio' ]. '<br /><hr />';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+    
+  }
+
 }
