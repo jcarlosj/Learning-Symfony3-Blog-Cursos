@@ -262,7 +262,31 @@ class PruebasController extends Controller {
 
     # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
     die();
-    
+
+  }
+
+  # Muestra resultados usando DQL
+  public function nativeDqlAction() {
+    $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+
+    # Definimos la "DQL Query" (Consulta con seudo-lenguaje de Doctrine)
+    $query = $em -> createQuery(
+      'select c from AppBundle:Curso c
+         where c.precio > :price'
+    ) -> setParameter(
+      'price', 80                          # Definimos los parámetros
+    );
+
+    $cursos = $query -> getResult();       # Del Resultado extraemos todos los registros
+
+    # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
+    foreach ( $cursos as $curso ) {
+      echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
   }
 
 }
