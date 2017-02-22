@@ -289,4 +289,28 @@ class PruebasController extends Controller {
 
   }
 
+  # Muestra resultados usando Query Builder
+  public function nativeQueryBuilderAction() {
+    $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
+
+    # Definimos el "Query Builder" (Constructor de consultas de Doctrine)
+    $query = $cursosRepository -> createQueryBuilder( 'c' )         # Alias de la entidad cursos
+                               -> where( 'c.precio > :precio' )
+                               -> setParameter( 'precio', 80 )
+                               -> orderBy( 'c.precio', 'ASC')
+                               -> getQuery();
+
+    $cursos = $query -> getResult();       # Del Resultado extraemos todos los registros
+
+    # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
+    foreach ( $cursos as $curso ) {
+      echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
+    }
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
+  }
+
 }
