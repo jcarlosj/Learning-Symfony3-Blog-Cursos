@@ -11,4 +11,135 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class CursoRepository extends EntityRepository {
+
+  # ----- CRUD Actions -----
+
+  # Indica si un curso existe o no
+  public function searchById( $id ) {
+    $exists = true;
+    # Método dinámico para encontrar un solo atributo de la entidad (campo de la tabla) basado en un valor de columna
+    $curso = $this -> find( $id );                     # Buscamos por ID
+
+    if ( !$curso ) {
+      $exists = false;
+    }
+
+    return $exists;
+  }
+
+  # ----- Métodos mostrar curso(s) -----
+
+  # Obtiene el primer curso con el precio indicado
+  public function getCursoByPrice( $precio ) {
+    # Método dinámico para encontrar un solo atributo de la entidad (campo de la tabla) basado en un valor de columna
+    $curso = $this -> findOneByPrecio( $precio );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el precio: ' .$precio. ' no existe'
+        );
+    }
+
+    return $curso;
+  }
+
+  # Obtiene el listado de cursos por precio
+  public function getCursosByPrice( $precio ) {
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $cursos = $this -> findBy( array( 'precio' => $precio ) );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$cursos ) {
+        throw $this -> createNotFoundException(
+            'Los cursos con el precio: ' .$precio. ' no existen'
+        );
+    }
+
+    return $cursos;
+  }
+
+  # Obtiene el curso por título
+  public function getCursoByTitle( $titulo ) {
+
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $curso = $this -> findOneByTitulo( $titulo );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el título: ' .$titulo. ' no existe'
+        );
+    }
+
+    return $curso;
+  }
+
+  # Obtiene el curso que tiene un título y precio definidos
+  public function getCursoByTitleAndPrice( $titulo, $precio ) {
+
+    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
+    $curso = $this -> findOneBy(
+      array('titulo' => $titulo, 'precio' => $precio )
+    );
+
+    # Valida si el objeto de la busqueda se crea (o si el registro existe)
+    if ( !$curso ) {
+        throw $this -> createNotFoundException(
+            'El curso con el título: ' .$titulo. ' y precio: ' .$precio. ' no existe'
+        );
+    }
+
+    return $curso;                        # Retornamos los registros encontrados
+  }
+
+  # Obtiene el listado de cursos usando SQL Nativo
+  public function getCursosNativeSQL() {
+    $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+    $db = $em -> getConnection();                     # Obtenemos la conexión a la BD
+
+    $query = 'select * from cursos';       # Definimos la "Query" (Consulta)
+    $stmt = $db -> prepare( $query );      # Preparamos la Consulta.
+    $params = array();                     # Definimos los parámetros (vacio en este caso)
+    $stmt -> execute( $params );           # Ejecutamos la Consulta contra la BD
+
+    $cursos = $stmt -> fetchAll();         # Del Resultado extraemos todos los registros (En un 'Array' de 'Arrays')
+
+    return $cursos;                        # Retornamos los registros encontrados
+  }
+
+  # Obtiene el listado de cursos usando "Doctrine Query Lenguage"
+  public function getCursosDQL() {
+    # En versiones de Symfony anteriores a la 3.0.3, hacemos uso del Manejador de Entidades de Doctrine
+    #$em = $this -> getEntityManager();
+
+    # Definimos la "DQL Query" (Consulta con seudo-lenguaje de Doctrine)
+    $query = $em -> createQuery(
+      'select c from AppBundle:Curso c
+         where c.precio > :price'
+    ) -> setParameter(
+      'price', 80                          # Definimos los parámetros
+    );
+
+    $cursos = $query -> getResult();       # Del Resultado extraemos todos los registros
+
+    return $cursos;                        # Retornamos los registros encontrados
+  }
+
+  # Obtiene el listado de cursos usando "Query Builder"
+  public function getCursosQueryBuilder() {
+    # En versiones de Symfony anteriores a la 3.0.3, hacemos uso del Manejador de Entidades de Doctrine
+    #$em = $this -> getEntityManager();
+
+    # Definimos el "Query Builder" (Constructor de consultas de Doctrine)
+    $query = $this -> createQueryBuilder( 'c' )         # Alias de la entidad cursos
+                   -> where( 'c.precio > :precio' )
+                   -> setParameter( 'precio', 80 )
+                   -> orderBy( 'c.precio', 'ASC')
+                   -> getQuery();
+    $cursos = $query -> getResult();                    # Del Resultado extraemos todos los registros
+
+    return $cursos;                                     # Retornamos los registros encontrados
+  }
+
 }

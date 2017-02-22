@@ -157,15 +157,9 @@ class PruebasController extends Controller {
   public function readByPriceAction( $precio ) {
     $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
-    # Método dinámico para encontrar un solo atributo de la entidad (campo de la tabla) basado en un valor de columna
-    $curso = $cursosRepository -> findOneByPrecio( $precio );
 
-    # Valida si el objeto de la busqueda se crea (o si el registro existe)
-    if ( !$curso ) {
-        throw $this -> createNotFoundException(
-            'El curso con el precio: ' .$precio. ' no existe'
-        );
-    }
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $curso = $cursosRepository -> getCursoByPrice( $precio );
 
     echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
 
@@ -178,15 +172,9 @@ class PruebasController extends Controller {
   public function readByPricesAction( $precio ) {
     $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
-    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
-    $cursos = $cursosRepository -> findBy( array( 'precio' => $precio ) );
 
-    # Valida si el objeto de la busqueda se crea (o si el registro existe)
-    if ( !$cursos ) {
-        throw $this -> createNotFoundException(
-            'Los cursos con el precio: ' .$precio. ' no existen'
-        );
-    }
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $cursos = $cursosRepository -> getCursosByPrice( $precio );
 
     # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
     foreach ( $cursos as $curso ) {
@@ -202,15 +190,9 @@ class PruebasController extends Controller {
   public function readByTitleAction( $titulo ) {
     $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
-    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
-    $curso = $cursosRepository -> findOneByTitulo( $titulo );
 
-    # Valida si el objeto de la busqueda se crea (o si el registro existe)
-    if ( !$curso ) {
-        throw $this -> createNotFoundException(
-            'El curso con el título: ' .$titulo. ' no existe'
-        );
-    }
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $curso = $cursosRepository -> getCursoByTitle( $titulo );
 
     echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
 
@@ -223,17 +205,9 @@ class PruebasController extends Controller {
   public function readByTitleAndPriceAction( $titulo, $precio ) {
     $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
-    # Obtenemos todos los cursos, que tienen por precio el valor de 80 (Funciona como un where)
-    $curso = $cursosRepository -> findOneBy(
-      array('titulo' => $titulo, 'precio' => $precio )
-    );
 
-    # Valida si el objeto de la busqueda se crea (o si el registro existe)
-    if ( !$curso ) {
-        throw $this -> createNotFoundException(
-            'El curso con el título: ' .$titulo. ' y precio: ' .$precio. ' no existe'
-        );
-    }
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $curso = $cursosRepository -> getCursoByTitleAndPrice( $titulo, $precio );
 
     echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
 
@@ -245,19 +219,14 @@ class PruebasController extends Controller {
   # Muestra resultados usando SQL Nativo
   public function nativeSqlAction() {
     $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
-    $db = $em -> getConnection();                     # Obtenemos la conexión a la BD
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
 
-    $query = 'select * from cursos';                  # Definimos la "Query" (Consulta)
-    $stmt = $db -> prepare( $query );                 # Preparamos la Consulta.
-    $params = array();                                # Definimos los parámetros (vacio en este caso)
-    $stmt -> execute( $params );                      # Ejecutamos la Consulta contra la BD
-
-    $cursos = $stmt -> fetchAll();                    # Del Resultado extraemos todos los registros (En un 'Array' de 'Arrays')
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $cursos = $cursosRepository -> getCursosQueryBuilder();
 
     # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
     foreach ( $cursos as $curso ) {
-      # Aqui no vamos a desplegar los datos como objetos, si no como 'Array'.
-      echo $curso[ 'titulo' ]. '<br />' .$curso[ 'descripcion' ]. '<br />' .$curso[ 'precio' ]. '<br /><hr />';
+      echo $curso -> getTitulo(). '<br />' .$curso -> getDescripcion(). '<br />' .$curso -> getPrecio(). '<br /><hr />';
     }
 
     # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
@@ -268,16 +237,10 @@ class PruebasController extends Controller {
   # Muestra resultados usando DQL
   public function nativeDqlAction() {
     $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+    $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
 
-    # Definimos la "DQL Query" (Consulta con seudo-lenguaje de Doctrine)
-    $query = $em -> createQuery(
-      'select c from AppBundle:Curso c
-         where c.precio > :price'
-    ) -> setParameter(
-      'price', 80                          # Definimos los parámetros
-    );
-
-    $cursos = $query -> getResult();       # Del Resultado extraemos todos los registros
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $cursos = $cursosRepository -> getCursosQueryBuilder();
 
     # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
     foreach ( $cursos as $curso ) {
@@ -291,17 +254,11 @@ class PruebasController extends Controller {
 
   # Muestra resultados usando Query Builder
   public function nativeQueryBuilderAction() {
-    $em = $this -> getDoctrine() -> getManager();     # Hacemos uso del Manejador de Entidades de Doctrine
+    $em = $this -> getDoctrine() -> getManager();                   # Hacemos uso del Manejador de Entidades de Doctrine
     $cursosRepository = $em -> getRepository( 'AppBundle:Curso' );  # Accedemos al repositorio
 
-    # Definimos el "Query Builder" (Constructor de consultas de Doctrine)
-    $query = $cursosRepository -> createQueryBuilder( 'c' )         # Alias de la entidad cursos
-                               -> where( 'c.precio > :precio' )
-                               -> setParameter( 'precio', 80 )
-                               -> orderBy( 'c.precio', 'ASC')
-                               -> getQuery();
-
-    $cursos = $query -> getResult();       # Del Resultado extraemos todos los registros
+    # Realizamos el llamado a nuestro Repositorio personalizado
+    $cursos = $cursosRepository -> getCursosQueryBuilder();
 
     # Recorremos el listado de cursos (para no generar la vista, pero esto no se debe hacer aquí)
     foreach ( $cursos as $curso ) {
