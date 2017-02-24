@@ -1,6 +1,7 @@
 <?php
 # Usamos el namespace
 namespace AppBundle\Controller;
+use Prophecy\Argument\ArgumentsWildcard;
 
 # Importar librerias desde el núcleo de Symfony
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; # Router
@@ -8,7 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;   # Controller
 use Symfony\Component\HttpFoundation\Request;               # Http
 
 # Importar archivos de la aplicación
-use \AppBundle\Entity\Curso;
+use \AppBundle\Entity\Curso;        # Entidad
+use \AppBundle\Form\CursoType;      # Formulario
 
 # Definición de la clase
 class PruebasController extends Controller {
@@ -268,6 +270,21 @@ class PruebasController extends Controller {
     # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
     die();
 
+  }
+
+  # Acceso al despliegue y funcionalidad del formulario
+  public function formAction() {
+
+    $curso = new Curso();                                         # Instancia del Objeto Curso (Entidad)
+    $form = $this -> createForm( CursoType :: class, $curso );    # Crea el formulario
+
+    # Despliega la vista y le pasa parámetros a la misma
+    return $this -> render(
+      'AppBundle:Pruebas:form.html.twig',                         # Indica la vista que va a desplegar
+      array(
+        'form' => $form -> createView()                           # Crea la vista del formulario
+      )
+    );
   }
 
 }

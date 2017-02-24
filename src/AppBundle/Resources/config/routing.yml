@@ -56,3 +56,7 @@ pruebas_dql:
 pruebas_query_builder:
     path : /pruebas/query-builder/
     defaults : { _controller: AppBundle:Pruebas:nativeQueryBuilder }
+
+pruebas_form_curso:
+    path : /pruebas/form-curso/
+    defaults : { _controller: AppBundle:Pruebas:form }
