@@ -3,8 +3,12 @@
       form,
       {
         'action':'',
-        'method':'post'   
+        'method':'post'
       }
     )
 }}
-{{ form_end( form ) }}    {# Cierre del formulario con el nombre del Formulario se cierra #}
+  {# Personalización del campo título #}
+  <label for="curso_titulo">Nombre del curso</label>    {# Cambiamos el nombre del label que se despliega #}
+  {{ form_errors( form .titulo ) }}
+  {{ form_widget( form .titulo ) }}         {# Despliega el campo personalizado #}
+{{ form_end( form ) }}                      {# Cierre del formulario con el nombre del Formulario se cierra #}

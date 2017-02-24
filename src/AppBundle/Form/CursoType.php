@@ -21,9 +21,29 @@ class CursoType extends AbstractType
     {
         $builder
             # Definición de los tipos de campos que vamos a usar.
-            ->add( 'titulo', TextType :: class )
-            ->add( 'descripcion', TextareaType :: class )
-            ->add( 'precio', TextType :: class )
+            ->add( 'titulo', TextType :: class, array(
+              # Definición de atributos del tipo de campo (a nivel del Tag HTML)
+                'attr' => array(
+                  'class' => 'form-field titulo',
+                  'placeholder' => 'Ej: Curso de repostería'
+                ),
+                'required' => 'required'
+            ) )
+            ->add( 'descripcion', TextareaType :: class, array(
+              # Definición de atributos del tipo de campo (a nivel del Tag HTML)
+              'attr' => array(
+                'class' => 'form-field descripcion'
+              ),
+              'required' => false
+            ) )
+            ->add( 'precio', TextType :: class, array(
+              # Definición de atributos del tipo de campo (a nivel del Tag HTML)
+              'attr' => array(
+                'class' => 'form-field precio',
+                'placeholder' => '200'
+              ),
+              'required' => true
+            ) )
             ->add( 'guardar', SubmitType :: class )   # Definimos un nuevo campo con su respectivo tipo
         ;
     }
