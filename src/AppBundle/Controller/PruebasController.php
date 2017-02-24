@@ -272,17 +272,41 @@ class PruebasController extends Controller {
 
   }
 
-  # Acceso al despliegue y funcionalidad del formulario
-  public function formAction() {
-
+  # Acceso al despliegue y funcionalidad del formulario por POST
+  public function formAction( Request $request ) {                # Pasamos el objeto request para poder
+                                                                  #   tomar los datos que nos llega del formulario
     $curso = new Curso();                                         # Instancia del Objeto Curso (Entidad)
     $form = $this -> createForm( CursoType :: class, $curso );    # Crea el formulario
 
+    # --- IMPLEMENTA VALIDACION  --- (Inicio)
+    # Hacemos un Binding (Unión de la entidad con el formulario), así los datos
+    #   recogidos por el formulario podrán ser manipulados por la entidad
+    $form -> handleRequest( $request );
+
+    # Validación del formulario
+    if( $form -> isValid() ) {
+      $status = 'Formulario válido';   # Flag
+      $data = array(
+        # Pasamos los datos obtenidos del formulario a un 'Array' que posteriormente
+        #  se pasará como parámetro a la vista
+        'titulo'      => $form -> get( 'titulo' ) -> getData(),
+        'descripcion' => $form -> get( 'descripcion' ) -> getData(),
+        'precio'      => $form -> get( 'precio' ) -> getData()
+      );
+    }
+    else {
+      # En caso de que el formulario no sea valido las variables deben ser nulas
+      $status = null;
+      $data   = null;
+    } # --- IMPLEMENTA VALIDACION  --- (Fin)
+
     # Despliega la vista y le pasa parámetros a la misma
     return $this -> render(
-      'AppBundle:Pruebas:form.html.twig',                         # Indica la vista que va a desplegar
+      'AppBundle:Pruebas:form.html.twig',          # Indica la vista que va a desplegar
       array(
-        'form' => $form -> createView()                           # Crea la vista del formulario
+        'form'   => $form -> createView(),        # Crea la vista del formulario
+        'status' => $status,                      # Pasa el Flag a la vista
+        'data'   => $data                         # Pasa los datos recogidos del formulario a la vista
       )
     );
   }

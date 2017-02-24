@@ -1,4 +1,10 @@
 <h2>Formulario curso<br /><small>con Symfony 3</small></h2>
+  {# Validamos los datos que vienen del controlador #}
+  {% if status != null and data != null %}
+    <h3>{{ status }}</h3>
+    {{ dump( data ) }}
+  {% endif %}
+
 {{ form_start(
       form,
       {
@@ -8,7 +14,6 @@
     )
 }}
   {# Personalización del campo título #}
-  <label for="curso_titulo">Nombre del curso</label>    {# Cambiamos el nombre del label que se despliega #}
-  {{ form_errors( form .titulo ) }}
-  {{ form_widget( form .titulo ) }}         {# Despliega el campo personalizado #}
+  {{ form_errors( form ) }}
+  {{ form_widget( form ) }}         {# Despliega el campo personalizado #}
 {{ form_end( form ) }}                      {# Cierre del formulario con el nombre del Formulario se cierra #}

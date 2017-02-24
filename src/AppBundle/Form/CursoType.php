@@ -34,7 +34,7 @@ class CursoType extends AbstractType
               'attr' => array(
                 'class' => 'form-field descripcion'
               ),
-              'required' => false
+              'required' => false 
             ) )
             ->add( 'precio', TextType :: class, array(
               # Definición de atributos del tipo de campo (a nivel del Tag HTML)
