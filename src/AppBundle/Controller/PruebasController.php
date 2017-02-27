@@ -9,8 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;   # Controller
 use Symfony\Component\HttpFoundation\Request;               # Http
 
 # Importar archivos de la aplicación
-use \AppBundle\Entity\Curso;        # Entidad
-use \AppBundle\Form\CursoType;      # Formulario
+use AppBundle\Entity\Curso;        # Entidad
+use AppBundle\Form\CursoType;      # Formulario
+use Symfony\Component\Validator\Constraints as Assert;   # Componente para validaciones aisladas
 
 # Definición de la clase
 class PruebasController extends Controller {
@@ -309,6 +310,31 @@ class PruebasController extends Controller {
         'data'   => $data                         # Pasa los datos recogidos del formulario a la vista
       )
     );
+  }
+
+  # Validar datos de forma aislada usando "Constraints"
+  public function validarEmailAction( $email ) {
+    # Creamos la instancia del "Constraint" a partir de su Alias y usamos el método que deseamos para validar
+    $emailConstraint = new Assert\Email();
+    $emailConstraint -> message = 'Pasame un buen correo';  # Asignamos un mensaje de error por defecto
+
+    # Valida el correo electrónico
+    $error = $this -> get( 'validator' ) -> validate( $email, $emailConstraint );
+
+    # Verificación (Control de errores)
+    if( count( $error ) == 0 ) {
+      echo '<h1>Correo valido</h1>';
+    }
+    else {
+      # Imprimimos el mensaje de error que hemos asignado por defecto
+      echo '<h1 style="color:red;">Correo invalido</h1>' .$error[ 0 ] -> getMessage();
+    }
+    # Visualiza el objeto error
+    echo '<hr /><pre>'; print_r( $error ); echo '</pre>';
+
+    # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+    die();
+
   }
 
 }
