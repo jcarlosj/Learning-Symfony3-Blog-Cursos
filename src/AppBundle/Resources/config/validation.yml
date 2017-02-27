@@ -6,7 +6,7 @@ AppBundle\Entity\Curso:
           min: 2
           minMessage: "El título debe tener mas de dos caracteres"
     descripcion:
-      - Blank: { message: 'Este campo puedes completarlo posteriormente' }
+      - NotBlank: { message: 'La descripción del curso no puede estar vacía' }
     precio:
       - Type:
           type: numeric

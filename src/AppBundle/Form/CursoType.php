@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 # Importamos las librerias de tipos de campo que vamos a usar
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CursoType extends AbstractType
@@ -34,13 +35,14 @@ class CursoType extends AbstractType
               'attr' => array(
                 'class' => 'form-field descripcion'
               ),
-              'required' => false 
+              'required' => false
             ) )
-            ->add( 'precio', TextType :: class, array(
+            ->add( 'precio', ChoiceType :: class, array(
               # Definición de atributos del tipo de campo (a nivel del Tag HTML)
-              'attr' => array(
-                'class' => 'form-field precio',
-                'placeholder' => '200'
+              'choices' => array(
+                'alto'  => '0',
+                'medio' => '1',
+                'bajo'  => '2'
               ),
               'required' => true
             ) )
