@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class CursoType extends AbstractType
@@ -37,13 +38,9 @@ class CursoType extends AbstractType
               ),
               'required' => false
             ) )
-            ->add( 'precio', ChoiceType :: class, array(
+            ->add( 'precio', CheckboxType :: class, array(
               # Definición de atributos del tipo de campo (a nivel del Tag HTML)
-              'choices' => array(
-                'alto'  => '0',
-                'medio' => '1',
-                'bajo'  => '2'
-              ),
+              'label' => '¿Mostrar precio?',
               'required' => true
             ) )
             ->add( 'guardar', SubmitType :: class )   # Definimos un nuevo campo con su respectivo tipo
