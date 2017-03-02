@@ -197,4 +197,3 @@ class Entry
         return $this->user;
     }
 }
-

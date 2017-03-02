@@ -47,20 +47,20 @@ BlogBundle\Entity\Entry:
             targetEntity: Category
             cascade: {  }
             fetch: LAZY
-            mappedBy: null
+            mappedBy: null    # Solo se llena si el campo en la BD se llama diferente a 'category_id' en este caso
             inversedBy: null
             joinColumns:
-                category_id:
+                category_id: # Este nombre se puede cambiar pero por defecto lo crea con el nombre del campo seguido de _id
                     referencedColumnName: id
             orphanRemoval: false
         user:
             targetEntity: User
             cascade: {  }
             fetch: LAZY
-            mappedBy: null
+            mappedBy: null      # Solo se llena si el campo en la BD se llama diferente a 'user_id' en este caso
             inversedBy: null
             joinColumns:
-                user_id:
+                user_id:       # Este nombre se puede cambiar pero por defecto lo crea con el nombre del campo seguido de _id
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

@@ -81,4 +81,3 @@ class Category
         return $this->description;
     }
 }
-

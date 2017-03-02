@@ -81,4 +81,3 @@ class EntryTag
         return $this->tag;
     }
 }
-
