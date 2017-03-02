@@ -19,7 +19,7 @@ BlogBundle\Entity\EntryTag:
                 strategy: IDENTITY
     manyToOne:
         entry:
-            targetEntity: Entries
+            targetEntity: Entry
             cascade: {  }
             fetch: LAZY
             mappedBy: null
@@ -29,7 +29,7 @@ BlogBundle\Entity\EntryTag:
                     referencedColumnName: id
             orphanRemoval: false
         tag:
-            targetEntity: Tags
+            targetEntity: Tag
             cascade: {  }
             fetch: LAZY
             mappedBy: null

@@ -44,7 +44,7 @@ BlogBundle\Entity\Entry:
                 fixed: false
     manyToOne:
         category:
-            targetEntity: Categories
+            targetEntity: Category
             cascade: {  }
             fetch: LAZY
             mappedBy: null
@@ -54,7 +54,7 @@ BlogBundle\Entity\Entry:
                     referencedColumnName: id
             orphanRemoval: false
         user:
-            targetEntity: Users
+            targetEntity: User
             cascade: {  }
             fetch: LAZY
             mappedBy: null
