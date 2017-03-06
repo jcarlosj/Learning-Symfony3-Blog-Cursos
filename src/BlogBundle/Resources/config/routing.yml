@@ -1,3 +1,11 @@
 blog_homepage:
     path:     /blog
     defaults: { _controller: BlogBundle:Default:index }
+
+blog_entradas:
+    path:     /blog/entradas
+    defaults: { _controller: BlogBundle:Default:getEntries }
+
+blog_categorias:
+    path:     /blog/categorias
+    defaults: { _controller: BlogBundle:Default:getCategories }

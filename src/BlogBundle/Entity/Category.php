@@ -2,6 +2,7 @@
 
 namespace BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Category
  */
@@ -22,6 +23,14 @@ class Category
      */
     private $description;
 
+    # Definimos un atributo para la nueva relación One-To-Many
+    protected $entry;
+
+    # Definimos un Array o Colección de Objetos usando la clase 'ArrayCollection ' de Doctrine
+    # dentro del constructor de la clase
+    public function __construct() {
+      $this -> entry = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -79,5 +88,20 @@ class Category
     public function getDescription()
     {
         return $this->description;
+    }
+
+    # ---> Getter y Setter de 'entry'
+
+    # Fijar Tag de la Entrada
+    public function addEntry( \BlogBundle\Entity\Entry $entry ) {
+      $this -> entry[] = $entry;
+
+      return $this;
+    }
+
+    # Obtener las Entradas de la Categoría
+    public function getEntries() {
+
+      return $this -> entry;
     }
 }

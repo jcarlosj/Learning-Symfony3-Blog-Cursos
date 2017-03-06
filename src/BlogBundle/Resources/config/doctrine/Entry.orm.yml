@@ -48,7 +48,7 @@ BlogBundle\Entity\Entry:
             cascade: {  }
             fetch: LAZY
             mappedBy: null    # Solo se llena si el campo en la BD se llama diferente a 'category_id' en este caso
-            inversedBy: null
+            inversedBy: entry # Agregamos el nombre de referencia del campo de la entidad que la que se relaciona
             joinColumns:
                 category_id: # Este nombre se puede cambiar pero por defecto lo crea con el nombre del campo seguido de _id
                     referencedColumnName: id

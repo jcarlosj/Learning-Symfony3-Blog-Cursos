@@ -23,4 +23,10 @@ BlogBundle\Entity\Category:
             length: 65535
             options:
                 fixed: false
+    # Definimos relación One-To-Many
+    oneToMany:                    # Una Categoria (ver mappedBy)
+        entry:                    # Tiene muchas entradas (Poner este nombre de campo en el 'inversedBy' de la entidad a la que relacionaremos)
+            targetEntity: Entry   # La entidad Objetivo
+            mappedBy: category    # Nombre de la entidad que estamos configurando
+    # Finalizamos la definición        
     lifecycleCallbacks: {  }
