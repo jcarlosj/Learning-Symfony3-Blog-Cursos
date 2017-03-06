@@ -19,9 +19,17 @@ class DefaultController extends Controller
         foreach ( $entries as $entry ) {
           echo $entry -> getTitle(). '<br /><blockquote>'                   # Obtenemos el título de la entrada
               .$entry -> getCategory() -> getName(). '<br />'               # Obtenemos la categoría de la entrada
-              .$entry -> getUser() -> getName(). '</blockquote><hr />';     # Obtenemos el nombre de usuario que ha creado la entrada
+              .$entry -> getUser() -> getName(). '<br />';                  # Obtenemos el nombre de usuario que ha creado la entrada
           # NOTA: Las relaciones ManyToOne en la configuración de las entidades facilitan extraer estos valores.
           #       Si no usaramos un ORM para poder extraer estos valores tendríamos que hacer otras consultas.
+
+          # Obtenemos todas las tags que tiene la entidad
+          $tags = $entry -> getEntryTag();
+          # Listamos cada una de las tags obtenidas
+          foreach ( $tags as $tag ) {
+            echo $tag -> getTag() -> getName(). ', ';
+          }
+          echo '</blockquote><hr />';
         }
 
         # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador

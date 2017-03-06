@@ -2,6 +2,8 @@
 
 namespace BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Entry
  */
@@ -42,6 +44,14 @@ class Entry
      */
     private $user;
 
+    # Definimos un atributo para la nueva relación One-To-Many
+    protected $entryTag;
+
+    # Definimos un Array o Colección de Objetos usando la clase 'ArrayCollection ' de Doctrine
+    # dentro del constructor de la clase
+    public function __construct() {
+      $this -> entryTag = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -196,4 +206,20 @@ class Entry
     {
         return $this->user;
     }
+
+    # ---> Getter y Setter de 'entryTag'
+
+    # Fijar Tag de la Entrada
+    public function addEntryTag( \BlogBundle\Entity\Tag $tag ) {
+      $this -> entryTag[] = $tag;
+
+      return $this;
+    }
+
+    # Obtener Tag de la Entrada
+    public function getEntryTag() {
+
+      return $this -> entryTag;
+    }
+
 }

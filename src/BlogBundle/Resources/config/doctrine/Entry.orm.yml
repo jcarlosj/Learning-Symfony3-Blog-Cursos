@@ -63,4 +63,12 @@ BlogBundle\Entity\Entry:
                 user_id:       # Este nombre se puede cambiar pero por defecto lo crea con el nombre del campo seguido de _id
                     referencedColumnName: id
             orphanRemoval: false
+    # Establecemos una relación One-To-Many
+    # Una entrada puede tener muchas Tags
+    oneToMany:                              # Tipo de relación
+        entryTag:                           # Nombre del "campo" referencia de la entidad en Doctrine
+            targetEntity: EntryTag          # Nombre de la entidad en Symfony
+            mappedBy: entry                 # Nombre del campo a Relacionar
+            cascade: [ 'persist' ]
+      # Finaliza relación
     lifecycleCallbacks: {  }

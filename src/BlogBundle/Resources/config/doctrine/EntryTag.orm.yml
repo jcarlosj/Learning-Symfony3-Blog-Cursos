@@ -17,13 +17,13 @@ BlogBundle\Entity\EntryTag:
             id: true
             generator:
                 strategy: IDENTITY
-    manyToOne:
-        entry:
-            targetEntity: Entry
+    manyToOne:                      # Tipo de relación
+        entry:                      # Nombre del "campo" referencia de la entidad en Doctrine
+            targetEntity: Entry     # Nombre de la entidad en Symfony
             cascade: {  }
             fetch: LAZY
-            mappedBy: null
-            inversedBy: null
+            mappedBy: null          # Nombre del campo a Relacionar
+            inversedBy: entryTag    # Agregamos el nombre de referencia del campo de la entidad que la que se relaciona
             joinColumns:
                 entry_id:
                     referencedColumnName: id
