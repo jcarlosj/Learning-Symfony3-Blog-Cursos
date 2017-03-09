@@ -9,3 +9,7 @@ blog_entradas:
 blog_categorias:
     path:     /blog/categorias
     defaults: { _controller: BlogBundle:Default:getCategories }
+
+blog_tags:
+    path:     /blog/tags
+    defaults: { _controller: BlogBundle:Default:getTags }    

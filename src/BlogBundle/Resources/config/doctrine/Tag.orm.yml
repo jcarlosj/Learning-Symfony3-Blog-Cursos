@@ -23,4 +23,9 @@ BlogBundle\Entity\Tag:
             length: 65535
             options:
                 fixed: false
+    oneToMany:                        # Tipo de relación
+        entryTag:                     # Nombre del "campo" referencia de la entidad en Doctrine
+            targetEntity: EntryTag    # Nombre de la entidad en Symfony
+            mappedBy: tag             # Nombre del campo a Relacionar
+            cascade: [ 'persist' ]
     lifecycleCallbacks: {  }

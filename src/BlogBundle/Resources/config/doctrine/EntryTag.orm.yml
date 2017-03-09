@@ -22,18 +22,18 @@ BlogBundle\Entity\EntryTag:
             targetEntity: Entry     # Nombre de la entidad en Symfony
             cascade: {  }
             fetch: LAZY
-            mappedBy: null          # Nombre del campo a Relacionar
+            mappedBy: null          # Nombre de la entidad que estamos configurando
             inversedBy: entryTag    # Agregamos el nombre de referencia del campo de la entidad que la que se relaciona
             joinColumns:
                 entry_id:
                     referencedColumnName: id
             orphanRemoval: false
-        tag:
+        tag:                        # (Campo) con el que se relaciona
             targetEntity: Tag
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: null
+            inversedBy: entryTag    # Agregamos el nombre de referencia del campo de la entidad que la que se relaciona
             joinColumns:
                 tag_id:
                     referencedColumnName: id

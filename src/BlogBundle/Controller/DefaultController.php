@@ -76,4 +76,34 @@ class DefaultController extends Controller
         return $this->render('BlogBundle:Default:index.html.twig');
     }
 
+    # Listar todas las Tags con su respectiva Entradas
+    public function getTagsAction()
+    {
+        # Guardamos los datos dentro de la entidad del ORM Doctrine
+        #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+        $em = $this -> getDoctrine() -> getManager();                       # Hacemos uso del Manejador de Entidades de Doctrine
+        $tagRepository = $em -> getRepository( 'BlogBundle:Tag' );      # Accedemos al repositorio
+        $tags = $tagRepository -> findAll();                           # Obtenemos todos los cursos
+
+        # Listamos desde el controlador cada una de las entradas sin usar una vista
+        foreach ( $tags as $tag ) {
+          echo $tag -> getName(). '<br /><blockquote>';                   # Obtenemos el título de la entrada
+          # NOTA: Las relaciones OneToMany en la configuración de las entidades facilitan extraer estos valores.
+          #       Si no usaramos un ORM para poder extraer estos valores tendríamos que hacer otras consultas.
+
+          # Obtenemos todas las tags que tiene la entidad Entradas
+          $entryTag = $tag -> getEntryTag();
+          # Listamos cada una de las tags obtenidas
+          foreach ( $entryTag as $entry ) {
+            echo $entry -> getEntry() -> getTitle(). ', ';
+          }
+          echo '</blockquote><hr />';
+        }
+
+        # Matamos la aplicación para que finalice su ejecución y permita ver los mensajes desde este controlador
+        die();
+
+        return $this->render('BlogBundle:Default:index.html.twig');
+    }
+
 }
