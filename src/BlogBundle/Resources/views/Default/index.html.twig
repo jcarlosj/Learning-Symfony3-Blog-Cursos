@@ -1,8 +1,16 @@
-<h2>Blog</h2>
-<nav>
-  <ul>
-    <li><a href="/blog/entradas">Entradas</a></li>
-    <li><a href="/blog/categorias">Categorias</a></li>
-    <li><a href="/blog/tags">Tags</a></li>
-  </ul>
-</nav>
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+<h2>Menú</h2>
+  <nav>
+    <ul>
+      <li><a href="/blog/entradas">Entradas</a></li>
+      <li><a href="/blog/categorias">Categorias</a></li>
+      <li><a href="/blog/tags">Tags</a></li>
+    </ul>
+  </nav>
+{% endblock %}
