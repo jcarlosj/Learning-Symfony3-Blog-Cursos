@@ -2,10 +2,11 @@
 
 namespace BlogBundle\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * User
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
@@ -196,4 +197,27 @@ class User
     {
         return $this->image;
     }
+
+    # AUTENTICACIÓN
+    #    Métodos de la Implementación de la Interface UserInterface
+
+    # Obtiene el nombre del usuario
+    public function getUserName() {
+      return $this -> email;       # En nuestro caso elegimos el email (ver configuración del provider)
+    }
+    # Obtiene el Salt Code (Clave adicional para agregar a la encripción)
+    public function getSalt() {
+                              # No es necesario usando la forma de autenticación que se ha realizado,
+      return null;            # pero el método es obligatorio implementarlo por que es una Interface
+    }
+    # Obtiene el Role
+    public function getRoles() {
+
+      #return array( ROLE_USER );   # Role fijo (Si no tuvieramos ACL, Sistema de Roles etc.)
+      return array( $this -> getRole() );   # Los trae de la base de datos
+    }
+
+    public function eraseCredentials() {}
+    # End - Autenticación
+
 }

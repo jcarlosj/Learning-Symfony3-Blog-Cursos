@@ -1,5 +1,17 @@
+# Rutas para la Autenticación de Usuarios
+login:
+    path: /login
+    defaults: { _controller: BlogBundle:User:login }
+
+login_check:
+    path: /login_check
+
+logout:
+    path: /logout
+
+# Rutas del Blog
 blog_homepage:
-    path:     /blog
+    path:     /
     defaults: { _controller: BlogBundle:Default:index }
 
 blog_entradas:
@@ -12,4 +24,4 @@ blog_categorias:
 
 blog_tags:
     path:     /blog/tags
-    defaults: { _controller: BlogBundle:Default:getTags }    
+    defaults: { _controller: BlogBundle:Default:getTags }

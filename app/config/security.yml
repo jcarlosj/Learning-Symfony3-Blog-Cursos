@@ -1,12 +1,21 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
-
+    # Agregamos un Codificador
+    encoders:
+        BlogBundle\Entity\User:   # Indicamos donde lo vamos a usar
+            algorithm: bcrypt       # Indicamos el tipo de Encoder
+            cost: 4                 # Indicamos la cantidad de veces que lo vamos a cifrar
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory: ~
-
+        #in_memory:
+            #memory: ~
+        # Configura la base de datos como un provider. Esto hará que los datos
+        # del usuario estén disponibles en una variable de sesión por toda la aplicación
+        our_db_provider:        # Se puede colocar cualquier nombre al Provider
+            entity:
+                class: BlogBundle:User
+                property: email
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
@@ -15,6 +24,15 @@ security:
 
         main:
             anonymous: ~
+            # Configura el Firewall. Esto le indica a Symfony como se va realizar la
+            # Autenticación
+            provider: our_db_provider   # Indicamos el Provider que va a usuario
+            form_login:
+                login_path: /login        # Ruta para ir al formulario de login
+                check_path: /login_check  # Ruta para acceder a la funcionalidad de autenticación
+            logout: 
+                path: /logout             # Ruta para acceder a la funcionalidad de salir de sesión
+                target: /login            # Ruta para redireccionar al salir de sesión
             # activate different ways to authenticate
 
             # http_basic: ~
