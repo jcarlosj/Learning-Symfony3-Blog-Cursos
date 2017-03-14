@@ -52,7 +52,17 @@ class UserController extends Controller
 
           # Validación del formulario
           if( $form -> isValid() ) {
-            $status = $this -> createUser( $form );                        #  Flag = Crea el usuario
+
+            # Consultamos si el usuario enviado en el formulario existe
+            $user = $this -> userExists( $form -> get( 'email' ) -> getData() );
+
+            # Validamos si el usuario enviado en el formulario existe (Si no hay registros en $user)
+            if( count( $user ) == 0 ) {
+                $status = $this -> createUser( $form );                        #  Flag = Crea el usuario
+            }
+            else {
+              $status = 'El usuario ya existe!!!';
+            }
           }
           else {
             # En caso de que el formulario no sea valido las variables deben ser nulas
@@ -111,6 +121,18 @@ class UserController extends Controller
                                                                         #   a cambio de crear el objeto con el namespace completo
       $encoder = $factory -> getEncoder( $user );                       # Los encoder van vínculados a las entidades por eso hay que pasarsela
       return $encoder -> encodePassword( $pass, $user -> getSalt() );   # Aunque para nuestro caso Salt es nulo siempre hay que pasarlo como parametro
+    }
+
+    # Valida si un usuario (a través de su email) ya tiene un registro en la base de datos 
+    public function userExists( $email ) {
+      # Guardamos los datos dentro de la entidad del ORM Doctrine
+      #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+      $em = $this -> getDoctrine() -> getManager();
+      $userRepository = $em -> getRepository( 'BlogBundle:User' );       # Obtenemos todos los registros de esta entidad
+
+      # Buscamos dentro de los registros devueltos por la entidad un usuario con el correo pasado por el usuario
+      # y retornamos el resultado
+      return $userRepository -> findOneBy( array( 'email' => $email ) );
     }
 
 }
