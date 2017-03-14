@@ -27,6 +27,12 @@
       <h2>Registro</h2>
       <p>Por favor registrate</p>
       <hr />
+      {# Recorremos lo que nos vienen de la sessión Flash Data para mostrar el mensaje 'status' #}
+      {% for message in app .session .flashbag() .get( 'status' ) %}
+          <div class="alert alert-success">
+            {{ message }}
+          </div>
+      {% endfor %}
       {{ form_start( form_register, { 'action':'', 'method':'post' } ) }} {# con o sin: { 'action':'', 'method':'post' } el formulario por defecto es POST #}
       {{ form_end( form_register ) }}
     </div>

@@ -4,11 +4,19 @@ namespace BlogBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use BlogBundle\Entity\User;         # Carga la clase de la entidad
 use BlogBundle\Form\UserType;       # Carga la clase del formulario
 
 class UserController extends Controller
 {
+    # Atributos
+    private $session;
+
+    # Constructor
+    public function __construct() {
+        $this -> session = new Session();      # Instancia de una nueva sessión (Se crea una sola ves para toda la aplicación y siempre estará disponible)
+    }
 
     public function loginAction( Request $request )
     {
@@ -24,8 +32,7 @@ class UserController extends Controller
         return $this -> render( 'BlogBundle:User:login.html.twig', array(
             'error'         => $error,
             'last_username' => $lastUsername,
-            'form_register' => $formRegister[ 'form' ] -> createView(),  # ó $formRegister[ 'form' ] (ver línea 56)
-            'form_status'   => $formRegister[ 'status' ]
+            'form_register' => $formRegister[ 'form' ] -> createView()   # ó $formRegister[ 'form' ] (ver línea 56)
         ));
     }
 
@@ -40,19 +47,26 @@ class UserController extends Controller
       #   recogidos por el formulario podrán ser manipulados por la entidad
       $form -> handleRequest( $request );
 
-      # Validación del formulario
-      if( $form -> isValid() ) {
-        $status = $this -> createUser( $form );                        #  Flag = Crea el usuario
+      # Validación si el formulario a sido enviado
+      if( $form -> isSubmitted() ) {
+
+          # Validación del formulario
+          if( $form -> isValid() ) {
+            $status = $this -> createUser( $form );                        #  Flag = Crea el usuario
+          }
+          else {
+            # En caso de que el formulario no sea valido las variables deben ser nulas
+            $status = 'No te has registrado correctamente';
+            #$form = null;
+          } # --- IMPLEMENTA VALIDACION  --- (Fin)
+
+          # Metemos el mensaje en una session de tipo Flash de Symphony
+          $this -> session -> getFlashBag() -> add( 'status', $status );
+
       }
-      else {
-        # En caso de que el formulario no sea valido las variables deben ser nulas
-        $status = 'No te has registrado correctamente';
-        #$form = null;
-      } # --- IMPLEMENTA VALIDACION  --- (Fin)
 
       # Despliega la vista y le pasa parámetros a la misma
       return array(
-          'status' => $status,
           'form'   => $form       # ó $form -> createView()
       );
     }
@@ -76,7 +90,7 @@ class UserController extends Controller
         $flush = $em -> flush();
 
         # Validamos si el registro se ha realizado con éxito
-        if( $flush != null ) {
+        if( $flush == null ) {
           $message = 'El usuario se ha creado correctamente';
         }
         else {
@@ -84,7 +98,6 @@ class UserController extends Controller
         }
 
         return $message;
-
     }
 
 }
