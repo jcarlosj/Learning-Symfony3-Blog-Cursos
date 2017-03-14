@@ -4,7 +4,7 @@ namespace BlogBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Session;   # Carga la clase de sesión de Symfony
 use BlogBundle\Entity\User;         # Carga la clase de la entidad
 use BlogBundle\Form\UserType;       # Carga la clase del formulario
 
@@ -77,7 +77,11 @@ class UserController extends Controller
         $user -> setName( $form -> get( 'name' ) -> getData() );
         $user -> setSurname( $form -> get( 'surname' ) -> getData() );
         $user -> setEmail( $form -> get( 'email' ) -> getData() );
-        $user -> setPassword( $form -> get( 'password' ) -> getData() );
+
+        # Ciframos la contraseña
+        $pass = $this -> generateBCrypt( $user, $form -> get( 'password' ) -> getData() );
+
+        $user -> setPassword( $pass );
         $user -> setRole( 'ROLE_USER' );
         $user -> setImage( null );
 
@@ -98,6 +102,15 @@ class UserController extends Controller
         }
 
         return $message;
+    }
+
+    # Ciframos la contraseña con el método BCript
+    public function generateBCrypt( User $user, $pass ) {
+      $factory = $this ->get( 'security.encoder_factory' );             # Es otra forma de llamar un objeto o crear un servicio
+                                                                        #   en lugar de crear el objeto, podemos llamarlo usando el get()
+                                                                        #   a cambio de crear el objeto con el namespace completo
+      $encoder = $factory -> getEncoder( $user );                       # Los encoder van vínculados a las entidades por eso hay que pasarsela
+      return $encoder -> encodePassword( $pass, $user -> getSalt() );   # Aunque para nuestro caso Salt es nulo siempre hay que pasarlo como parametro
     }
 
 }
