@@ -25,3 +25,7 @@ blog_categorias:
 blog_tags:
     path:     /blog/tags
     defaults: { _controller: BlogBundle:Default:getTags }
+
+blog_add_tags:
+    path:     /tags/add
+    defaults: { _controller: BlogBundle:Tag:add }    

@@ -1,0 +1,12 @@
+BlogBundle\Entity\Tag:
+  properties:
+    name:
+      - NotBlank: { message: "El nombre del tag no puede estar vacío" }
+      - Length:
+          min: 2
+          minMessage: "El nombre del tag debe tener mas de dos caracteres"
+    description:
+      - NotBlank: { message: 'La descripción del tag no puede estar vacía' }
+      - Length:
+          min: 10
+          minMessage: "La descripcion del tag debe tener mas de diez caracteres"
