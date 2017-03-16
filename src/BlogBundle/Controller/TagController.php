@@ -18,6 +18,22 @@ class TagController extends Controller
         $this -> session = new Session();      # Instancia de una nueva sessión (Se crea una sola ves para toda la aplicación y siempre estará disponible)
     }
 
+    # ACCION: Listar Tags
+    # DESCRIPCION: Acceso al despliegue listado de tags
+    public function indexAction() {                   
+
+      # Guardamos los datos dentro de la entidad del ORM Doctrine
+      #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+      $em = $this -> getDoctrine() -> getManager();                       # Hacemos uso del Manejador de Entidades de Doctrine
+      $tagRepository = $em -> getRepository( 'BlogBundle:Tag' );          # Accedemos al repositorio
+      $tags = $tagRepository -> findAll();
+
+      # Despliega la vista y le pasa parámetros a la misma
+      return $this -> render( 'BlogBundle:Tag:index.html.twig', array(
+        'tags' => $tags
+      ));
+    }
+
     # ACCION: Agregar Tag
     # DESCRIPCION: Acceso al despliegue y funcionalidad del formulario por POST
     public function addAction( Request $request ) {                   # Pasamos el objeto request para poder
@@ -41,12 +57,13 @@ class TagController extends Controller
           else {
             # En caso de que el formulario no sea valido las variables deben ser nulas
             $status = 'No ha registrado el tag correctamente';
-
           }
 
           # Metemos el mensaje en una session de tipo Flash de Symphony
           $this -> session -> getFlashBag() -> add( 'status', $status );
 
+          # Redireccionamos a la ruta que nos llevará al listado de tags
+          return $this -> redirectToRoute( 'blog_index_tags' );
       } # --- IMPLEMENTA VALIDACION  --- (Fin)
 
 

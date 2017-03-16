@@ -1,0 +1,35 @@
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+  <div class="col-lg-6">
+    <h2>Listado de etiquetas</h2>
+    <hr />
+    {# Despliega botón para agregar mas etiquetas #}
+    <a href="{{ path( 'blog_add_tag' ) }}" class="btn btn-success">Nueva etiqueta</a>
+    <hr />
+    {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {# Despliega listado de etiquetas en una tabla con Twitter Boostrap #}
+    <table class="table table-bordered">
+      <tr>
+        <th>Nombre del tag</th>
+        <th>Descripción</th>
+      </tr>
+      {% for tag in tags %}
+      <tr>
+        <td>{{ tag.name }}</td>
+        <td>{{ tag.description }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="clearfix"></div>
+{% endblock %}
