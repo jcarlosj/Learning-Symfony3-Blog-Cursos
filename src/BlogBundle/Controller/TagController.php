@@ -36,7 +36,7 @@ class TagController extends Controller
           # Validación del formulario
           if( $form -> isValid() ) {
             # En caso de que el formulario no sea valido las variables deben tener los valores enviados en el formulario
-            $status = 'El tag se ha creado correctamente';
+            $status = $this -> create( $form );
           }
           else {
             # En caso de que el formulario no sea valido las variables deben ser nulas
@@ -54,6 +54,31 @@ class TagController extends Controller
       return $this -> render( 'BlogBundle:Tag:add.html.twig', array(
         'form_tag' => $form -> createView()
       ));
+    }
+
+    public function create( $form ) {
+        $tag = new Tag();
+
+        $tag -> setName( $form -> get( 'name' ) -> getData() );
+        $tag -> setDescription( $form -> get( 'description' ) -> getData() );
+
+        # Guardamos los datos dentro de la entidad del ORM Doctrine
+        #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+        $em = $this -> getDoctrine() -> getManager();
+        $em -> persist( $tag );
+
+        # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
+        $flush = $em -> flush();
+
+        # Validamos si el registro se ha realizado con éxito
+        if( $flush == null ) {
+          $message = 'El tag se ha creado correctamente';
+        }
+        else {
+          $message = 'No has creado el tag correctamente ';
+        }
+
+        return $message;
     }
 
 }
