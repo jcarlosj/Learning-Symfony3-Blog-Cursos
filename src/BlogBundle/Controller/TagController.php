@@ -101,6 +101,18 @@ class TagController extends Controller
     # ACCION: Eliminar Tag
     # DESCRIPCION: Acceso al despliegue y funcionalidad del formulario por GET
     public function deleteAction( $id ) {
+
+        # Validamos si el ID es un valor numérico
+        if( !is_numeric( $id ) ) {
+          $status = 'El id no es valido';
+
+          # Metemos el mensaje en una session de tipo Flash de Symphony
+          $this -> session -> getFlashBag() -> add( 'status', $status );
+
+          # Redireccionamos al listado de tags
+          return $this -> redirectToRoute( 'blog_index_tags' );
+        }
+
         if( $id != null ) {
           # Guardamos los datos dentro de la entidad del ORM Doctrine
           #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
