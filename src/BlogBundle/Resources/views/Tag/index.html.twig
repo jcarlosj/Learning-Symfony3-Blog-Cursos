@@ -7,10 +7,18 @@
 {% block content %}
   <div class="col-lg-6">
     <h2>Listado de etiquetas</h2>
-    <hr />
-    {# Despliega botón para agregar mas etiquetas #}
-    <a href="{{ path( 'blog_add_tag' ) }}" class="btn btn-success">Nueva etiqueta</a>
-    <hr />
+    {# Despliega botón para agregar mas etiquetas y las convenciones de los iconos #}
+    <table class="table">
+      <tr>
+        <td>
+          <a href="{{ path( 'blog_add_tag' ) }}" class="btn btn-success">Nueva etiqueta</a>
+        </td>
+        <td>
+          <a href="#"><span class="glyphicon glyphicon-pushpin"></span></a> Tag asociado, no se puede borrar<br />
+          <a href="#"><span class="glyphicon glyphicon-remove-sign"></span></a> Tag sin registros asociados
+        </td>
+      </tr>
+    </table>
     {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
     {% for message in app.session.flashbag().get( 'status' ) %}
       <div class="alert alert-success">
@@ -22,11 +30,23 @@
       <tr>
         <th>Nombre del tag</th>
         <th>Descripción</th>
+        <th>&nbsp;</th>
       </tr>
       {% for tag in tags %}
       <tr>
         <td>{{ tag.name }}</td>
         <td>{{ tag.description }}</td>
+        <td>
+          <a href="{{ path( 'blog_delete_tag', { 'id': tag.id } ) }}">
+            {% if tag.entryTag | length > 0 %}
+              {# El tag esta en uso por que el número de registros asociados es mayor a cero #}
+              <span class="glyphicon glyphicon-pushpin"></span>
+            {% else %}
+              {# El tag NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar tag #}
+              <span class="glyphicon glyphicon-remove-sign"></span>
+            {% endif %}
+          </a>
+        </td>
       </tr>
       {% endfor %}
     </table>

@@ -20,7 +20,7 @@ class TagController extends Controller
 
     # ACCION: Listar Tags
     # DESCRIPCION: Acceso al despliegue listado de tags
-    public function indexAction() {                   
+    public function indexAction() {
 
       # Guardamos los datos dentro de la entidad del ORM Doctrine
       #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
@@ -96,6 +96,45 @@ class TagController extends Controller
         }
 
         return $message;
+    }
+
+    # ACCION: Eliminar Tag
+    # DESCRIPCION: Acceso al despliegue y funcionalidad del formulario por GET
+    public function deleteAction( $id ) {
+        if( $id != null ) {
+          # Guardamos los datos dentro de la entidad del ORM Doctrine
+          #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+          $em = $this -> getDoctrine() -> getManager();                       # Hacemos uso del Manejador de Entidades de Doctrine
+          $tagRepository = $em -> getRepository( 'BlogBundle:Tag' );          # Accedemos al repositorio
+          $tag = $tagRepository -> find( $id );                               # Busca el id
+
+          # Obtener las Entradas de cada Tag
+          #var_dump( count( $tag -> getEntryTag() ) );
+
+          # Validamos la cantidad de registros por tag
+          if( count( $tag -> getEntryTag() ) > 0 ) {
+              $status = 'No se puede eliminar. Esta asociado a ' .count( $tag -> getEntryTag() ). ' entrada';
+              if( count( $tag -> getEntryTag() ) > 1 ) {
+                  $status .= 's';
+              }
+
+          }
+          else {
+            # Como el tag NO tiene REGISTROS asociados se puede eliminar
+            # Si el tag TIENE REGISTROS asociados NO se puede eliminar
+            $em -> remove( $tag );
+            # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
+            $flush = $em -> flush();
+
+            $status = 'El tag se ha eliminado correctamente';
+          }
+
+          # Metemos el mensaje en una session de tipo Flash de Symphony
+          $this -> session -> getFlashBag() -> add( 'status', $status );
+
+          # Redireccionamos al listado de tags
+          return $this -> redirectToRoute( 'blog_index_tags' );
+        }
     }
 
 }
