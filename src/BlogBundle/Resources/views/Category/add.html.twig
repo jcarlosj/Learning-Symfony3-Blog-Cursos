@@ -1,0 +1,20 @@
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+  <div class="col-lg-6">
+    <h2>Añadir categoría</h2>
+    {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {{ form_start( form_category ) }}
+    {{ form_end( form_category ) }}
+  </div>
+  <div class="clearfix"></div>
+{% endblock %}

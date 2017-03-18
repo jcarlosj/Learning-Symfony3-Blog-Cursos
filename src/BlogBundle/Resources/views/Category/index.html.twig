@@ -1,0 +1,61 @@
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+  <div class="col-lg-6">
+    <h2>Listado de categorías</h2>
+    {# Despliega botón para agregar mas etiquetas y las convenciones de los iconos #}
+    <table class="table">
+      <tr>
+        <td>
+          <a href="{{ path( 'blog_add_category' ) }}" class="btn btn-success">Nueva categoría</a>
+        </td>
+        <td>
+          <a href="#"><span class="glyphicon glyphicon-pushpin"></span></a> Categoría asociada, no se puede borrar<br />
+          <a href="#"><span class="glyphicon glyphicon-remove-sign"></span></a> Categoría sin registros asociados
+        </td>
+      </tr>
+    </table>
+    {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {# Despliega listado de categorias en una tabla con Twitter Boostrap #}
+    <table class="table table-bordered">
+      <tr>
+        <th>Nombre de la categoría</th>
+        <th>Descripción</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+      </tr>
+      {% for category in categories %}
+      <tr>
+        <td>{{ category.name }}</td>
+        <td>{{ category.description }}</td>
+        <td>
+          <a href="{{ path( 'blog_delete_category', { 'id': category.id } ) }}">
+            {% if category.entries | length > 0 %}
+              {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
+              <span class="glyphicon glyphicon-pushpin"></span>
+            {% else %}
+              {# El categoría NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar category #}
+              <span class="glyphicon glyphicon-remove-sign"></span>
+            {% endif %}
+          </a>
+        </td>
+        <td>
+          <a href="{{ path( 'blog_edit_category', { 'id': category.id } ) }}">
+            <span class="glyphicon glyphicon-edit"></span>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="clearfix"></div>
+{% endblock %}
