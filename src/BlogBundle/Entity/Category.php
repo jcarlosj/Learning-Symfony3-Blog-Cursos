@@ -32,6 +32,13 @@ class Category
       $this -> entry = new ArrayCollection();
     }
 
+    # Despliega nombre categoría
+    # Se implementa para permitir que se despliege en el Selector (ChoiseType)
+    # del formulario de entradas
+    public function __toString() {
+        return $this -> name;
+    }
+
     /**
      * Get id
      *
