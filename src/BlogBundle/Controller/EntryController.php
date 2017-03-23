@@ -52,15 +52,15 @@ class EntryController extends Controller
           # Validación del formulario
           if( $form -> isValid() ) {
             # En caso de que el formulario no sea valido las variables deben tener los valores enviados en el formulario
-            #$status = $this -> create( $form );
+            $status = $this -> create( $form );
           }
           else {
             # En caso de que el formulario no sea valido las variables deben ser nulas
-            $status = 'No ha registrado la categoría correctamente';
+            $status = 'No ha registrado la entrada correctamente';
           }
 
           # Metemos el mensaje en una session de tipo Flash de Symphony
-          #$this -> session -> getFlashBag() -> add( 'status', $status );
+          $this -> session -> getFlashBag() -> add( 'status', $status );
 
           # Redireccionamos a la ruta que nos llevará al listado de tags
           #return $this -> redirectToRoute( 'blog_index_category' );
@@ -74,25 +74,43 @@ class EntryController extends Controller
     }
 
     public function create( $form ) {
-        $category = new Category();
-
-        $category -> setName( $form -> get( 'name' ) -> getData() );
-        $category -> setDescription( $form -> get( 'description' ) -> getData() );
 
         # Guardamos los datos dentro de la entidad del ORM Doctrine
         #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
         $em = $this -> getDoctrine() -> getManager();
-        $em -> persist( $category );
+        
+        # Extraemos datos del repositorio de la entidad Category
+        $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
+
+        $entry = new Entry();
+
+        # Set fields
+        $entry -> setTitle( $form -> get( 'title' ) -> getData() );
+        $entry -> setContent( $form -> get( 'content' ) -> getData() );
+        $entry -> setStatus( $form -> get( 'status' ) -> getData() );
+        $entry -> setImage( null );
+        $entry -> setCategory(
+            # Obtenemos el objeto específico seleccionado buscandolo por su ID dentro del repositorio de la entidad
+            $categoryRepository -> find(
+              $form -> get( 'category' ) -> getData()   # Objeto seleccionado en el Choice (select)
+            )
+        );
+        $entry -> setUser(
+          $this -> getUser()                            # Obtenemos el usuario de la sesion
+        );
+
+        # Persistencia
+        $em -> persist( $entry );
 
         # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
         $flush = $em -> flush();
 
         # Validamos si el registro se ha realizado con éxito
         if( $flush == null ) {
-          $message = 'La categoría se ha creado correctamente';
+          $message = 'La entrada se ha creado correctamente';
         }
         else {
-          $message = 'No has creado la categoría correctamente ';
+          $message = 'No has creado la entrada correctamente ';
         }
 
         return $message;

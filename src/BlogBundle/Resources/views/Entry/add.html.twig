@@ -8,11 +8,11 @@
   <div class="col-lg-6">
     <h2>Añadir entradas</h2>
     {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
-    {# % for message in app.session.flashbag().get( 'status' ) % #}
-      <!--div class="alert alert-success">
-        {# { message } #}
-      </div-->
-    {# % endfor % #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
     {{ form_start( form_entry ) }}
     {{ form_end( form_entry ) }}
   </div>
