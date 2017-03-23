@@ -78,7 +78,7 @@ class EntryController extends Controller
         # Guardamos los datos dentro de la entidad del ORM Doctrine
         #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
         $em = $this -> getDoctrine() -> getManager();
-        
+
         # Extraemos datos del repositorio de la entidad Category
         $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
 
@@ -88,7 +88,7 @@ class EntryController extends Controller
         $entry -> setTitle( $form -> get( 'title' ) -> getData() );
         $entry -> setContent( $form -> get( 'content' ) -> getData() );
         $entry -> setStatus( $form -> get( 'status' ) -> getData() );
-        $entry -> setImage( null );
+        $entry -> setImage( $this -> uploadFileImage( $form ) );          # Subimos, guardamos la imagen y su nombre en la BD
         $entry -> setCategory(
             # Obtenemos el objeto específico seleccionado buscandolo por su ID dentro del repositorio de la entidad
             $categoryRepository -> find(
@@ -114,6 +114,16 @@ class EntryController extends Controller
         }
 
         return $message;
+    }
+
+    # Funcionalidad: Capturar y Guardar el fichero de la imagen
+    private function uploadFileImage( $form ) {
+        $file = $form[ 'image' ] -> getData();                 # Es lo mismo que hacer: $form -> get( 'image' ) -> getData();
+        $fileName = time(). '.' .$file -> guessExtension() ;   # Asignamos un nuevo nombre al archivo. Para ello le asignamos
+                                                               # la Fecha como nombre, además obtenemos y le agregamos al nombre la extensión del archivo
+        $file -> move( 'uploads', $fileName );                 # Movemos las imagenes al directorio 'uploads' que se ubicará en el directorio web del framework
+
+        return $fileName;                                      # Retornamos el nombre que deseamos que se guarde en la BD
     }
 
     # ACCION: Eliminar Categoria

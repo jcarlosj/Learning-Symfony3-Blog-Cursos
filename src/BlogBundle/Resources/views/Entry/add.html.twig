@@ -13,7 +13,7 @@
         {{ message }}
       </div>
     {% endfor %}
-    {{ form_start( form_entry ) }}
+    {{ form_start( form_entry, { 'enctype': 'multipart/form-data' } ) }}    {# Agrega ficheros al formulario (imagen) #}
     {{ form_end( form_entry ) }}
   </div>
   <div class="clearfix"></div>
