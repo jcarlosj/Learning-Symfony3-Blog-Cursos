@@ -77,10 +77,11 @@ class EntryController extends Controller
 
         # Guardamos los datos dentro de la entidad del ORM Doctrine
         #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
-        $em = $this -> getDoctrine() -> getManager();
+        $em = $this->getDoctrine()->getManager();      # En un repositorio no hace falta usar getDoctrine() porque ya tienes disponible doctrine.
 
         # Extraemos datos del repositorio de la entidad Category
         $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
+        $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );    # Accedemos al repositorio
 
         $entry = new Entry();
 
@@ -104,6 +105,9 @@ class EntryController extends Controller
 
         # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
         $flush = $em -> flush();
+
+        # Guarda las etiquetas asociadas a la entrada
+        $entryRepository -> addEntryTags( $entry, $form -> get( 'tags' ) -> getData() );
 
         # Validamos si el registro se ha realizado con éxito
         if( $flush == null ) {
