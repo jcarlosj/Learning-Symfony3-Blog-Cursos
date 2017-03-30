@@ -25,12 +25,12 @@ class EntryController extends Controller
       # Guardamos los datos dentro de la entidad del ORM Doctrine
       #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
       $em = $this -> getDoctrine() -> getManager();                              # Hacemos uso del Manejador de Entidades de Doctrine
-      $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );       # Accedemos al repositorio
-      $categories = $categoryRepository -> findAll();
+      $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );             # Accedemos al repositorio
+      $entries = $entryRepository -> findAll();
 
       # Despliega la vista y le pasa parámetros a la misma
-      return $this -> render( 'BlogBundle:Category:index.html.twig', array(
-        'categories' => $categories
+      return $this -> render( 'BlogBundle:Entry:index.html.twig', array(
+        'entries' => $entries
       ));
     }
 
@@ -63,7 +63,7 @@ class EntryController extends Controller
           $this -> session -> getFlashBag() -> add( 'status', $status );
 
           # Redireccionamos a la ruta que nos llevará al listado de tags
-          #return $this -> redirectToRoute( 'blog_index_category' );
+          return $this -> redirectToRoute( 'blog_homepage' );
       } # --- IMPLEMENTA VALIDACION  --- (Fin)
 
 

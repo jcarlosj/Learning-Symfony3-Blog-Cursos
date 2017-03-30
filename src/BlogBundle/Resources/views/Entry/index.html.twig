@@ -1,0 +1,75 @@
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+  <div class="col-lg-8">
+    <h2>Listado de categorías</h2>
+    {# Despliega botón para agregar mas etiquetas y las convenciones de los iconos #}
+    <table class="table">
+      <tr>
+        <td>
+          <a href="{{ path( 'blog_add_entry' ) }}" class="btn btn-success">Nueva entrada</a>
+        </td>
+        <td>
+          <a href="#"><span class="glyphicon glyphicon-pushpin"></span></a> Entrada asociada, no se puede borrar<br />
+          <a href="#"><span class="glyphicon glyphicon-remove-sign"></span></a> Entrada sin registros asociados
+        </td>
+      </tr>
+    </table>
+    {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {# Despliega listado de categorias en una tabla con Twitter Boostrap #}
+    <table class="table table-bordered">
+      {% for entry in entries %}
+      <tr>
+        <td>
+          <p class="pull-left">
+            <img style="width: 250px; margin-right: 8px; margin-bottom: 2px;" src="
+              {% if entry.image %}
+                {{ asset( 'uploads/'~entry.image ) }}
+              {% else %}
+                {{ asset( 'uploads/imagen-no-disponible.png' ) }}
+              {% endif %}
+            " alt="{{ entry.title }}" />
+          </p>
+          <p><strong style="font-size: 11px;">Nombre de la entrada</strong><br /> {{ entry.title }}</p>
+          <p><strong style="font-size: 11px;">Categoría</strong><br /> {{ entry.category }}</p>
+          <p><strong style="font-size: 11px;">Contenido</strong><br /> {{ entry.content }}</p>
+          {% if entry.entryTag | length > 0 %}
+          <p><strong style="font-size: 11px;">Etiquetas</strong><br />
+            {% for entry_tag in entry.entryTag %}
+              {{ entry_tag.tag.name }},
+            {% endfor %}
+          </p>
+          {% endif %}
+          <div class="clearfix"></div>
+        </td>
+        <!--td>{#
+          <a href="{# { path( 'blog_delete_category', { 'id': category.id } ) } #}">
+            {# % if category.entries | length > 0 % #}
+              {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
+              <span class="glyphicon glyphicon-pushpin"></span>
+            {# % else % #}
+              {# El categoría NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar category #}
+              <span class="glyphicon glyphicon-remove-sign"></span>
+            {# % endif % #}
+          </a>#}
+        </td>
+        <td>
+          <a href="{#{ path( 'blog_edit_category', { 'id': category.id } ) }#}">
+            <span class="glyphicon glyphicon-edit"></span>
+          </a>
+        </td-->
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="clearfix"></div>
+{% endblock %}
