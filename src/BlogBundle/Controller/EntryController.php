@@ -133,7 +133,7 @@ class EntryController extends Controller
         return $fileName;                                      # Retornamos el nombre que deseamos que se guarde en la BD
     }
 
-    # ACCION: Eliminar Categoria
+    # ACCION: Eliminar Categoria (CON RESTRICCIÓN a los que están asociados a ETIQUETAS)
     # DESCRIPCION: Acceso al despliegue y funcionalidad del formulario por GET
     public function deleteAction( $id ) {
 
@@ -144,24 +144,24 @@ class EntryController extends Controller
           # Metemos el mensaje en una session de tipo Flash de Symphony
           $this -> session -> getFlashBag() -> add( 'status', $status );
 
-          # Redireccionamos al listado de tags
-          return $this -> redirectToRoute( 'blog_index_tags' );
+          # Redireccionamos al listado de entradas (que ahora se encuentran en el home de la aplicación)
+          return $this -> redirectToRoute( 'blog_homepage' );
         }
 
         if( $id != null ) {
           # Guardamos los datos dentro de la entidad del ORM Doctrine
           #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
           $em = $this -> getDoctrine() -> getManager();                           # Hacemos uso del Manejador de Entidades de Doctrine
-          $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
-          $category = $categoryRepository -> find( $id );                         # Busca el id
+          $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );          # Accedemos al repositorio
+          $entry = $entryRepository -> find( $id );                                # Busca el id
 
           # Obtener las Entradas de cada Tag
           #var_dump( count( $tag -> getEntryTag() ) );
 
           # Validamos la cantidad de registros por tag
-          if( count( $category -> getEntries() ) > 0 ) {
-              $status = 'No se puede eliminar. Esta asociado a ' .count( $category -> getEntries() ). ' etiqueta';
-              if( count( $category -> getEntries() ) > 1 ) {
+          if( count( $entry -> getEntryTag() ) > 0 ) {
+              $status = 'No se puede eliminar. Esta asociado a ' .count( $entry -> getEntryTag() ). ' etiqueta';
+              if( count( $entry -> getEntryTag() ) > 1 ) {
                   $status .= 's';
               }
 
@@ -169,19 +169,79 @@ class EntryController extends Controller
           else {
             # Como el tag NO tiene REGISTROS asociados se puede eliminar
             # Si el tag TIENE REGISTROS asociados NO se puede eliminar
-            $em -> remove( $category );
+            $em -> remove( $entry );
             # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
             $flush = $em -> flush();
 
-            $status = 'La categoría se ha eliminado correctamente';
+            $status = 'La entrada se ha eliminado correctamente';
           }
 
           # Metemos el mensaje en una session de tipo Flash de Symphony
           $this -> session -> getFlashBag() -> add( 'status', $status );
 
-          # Redireccionamos al listado de tags
-          return $this -> redirectToRoute( 'blog_index_category' );
+          # Redireccionamos al listado de Entradas (que ahora se encuentran en el home de la aplicación)
+          return $this -> redirectToRoute( 'blog_homepage' );
         }
+    }
+
+    # ACCION: Eliminar Categoria (SIN RESTRICCIÓN a los que están asociados a ETIQUETAS)
+    # DESCRIPCION: Acceso al despliegue y funcionalidad del formulario por GET
+    public function deleteWithTagsAction( $id ) {
+
+      # Validamos si el ID es un valor numérico
+      if( !is_numeric( $id ) ) {
+        $status = 'El id no es valido';
+
+        # Metemos el mensaje en una session de tipo Flash de Symphony
+        $this -> session -> getFlashBag() -> add( 'status', $status );
+
+        # Redireccionamos al listado de entradas (que ahora se encuentran en el home de la aplicación)
+        return $this -> redirectToRoute( 'blog_homepage' );
+      }
+
+      if( $id != null ) {
+        $flag_tags = false;
+        # Guardamos los datos dentro de la entidad del ORM Doctrine
+        #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+        $em = $this -> getDoctrine() -> getManager();                                # Hacemos uso del Manejador de Entidades de Doctrine
+        $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );               # Accedemos al repositorio
+        $entryTagsRepository = $em -> getRepository( 'BlogBundle:EntryTag' );        # Accedemos al repositorio
+        $entry = $entryRepository -> find( $id );                                    # Busca el id
+        $entryTags = $entryTagsRepository -> findBy( array( 'entry' => $entry ) );   # Busca todos registros asociados a las entradas que se le pasan
+
+        # Elimina cada una de las etiquetas de la entrada que estan asociadas
+        foreach ( $entryTags as $entrytag ) {
+          if( is_object( $entrytag ) ) {      # Funciona como un isset preguntando si es un objeto
+            # Como el tag NO tiene REGISTROS asociados se puede eliminar
+            # Si el tag TIENE REGISTROS asociados NO se puede eliminar
+            $em -> remove( $entrytag );
+            # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
+            $flush = $em -> flush();
+
+            $status_tag = 'y las etiquetas asociadas ';
+            $flag_tags = true;
+          }
+        }
+
+        # Elimina las entradas
+        # Como el tag NO tiene REGISTROS asociados se puede eliminar
+        # Si el tag TIENE REGISTROS asociados NO se puede eliminar
+        $em -> remove( $entry );
+        # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
+        $flush = $em -> flush();
+
+        # Construye el mensaje de error
+        $status = 'La entrada ';
+        if( $flag_tags ) {
+          $status .= $status_tag;
+        }
+        $status .= 'se ha eliminado correctamente';
+
+      }
+      # Metemos el mensaje en una session de tipo Flash de Symphony
+      $this -> session -> getFlashBag() -> add( 'status', $status );
+
+      return $this -> redirectToRoute( 'blog_homepage' );
     }
 
     # ACCION: Editar Categoria

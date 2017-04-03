@@ -17,8 +17,9 @@
           <a href="{{ path( 'blog_add_entry' ) }}" class="btn btn-success">Nueva entrada</a>
         </td>
         <td>
-          <a href="#"><span class="glyphicon glyphicon-pushpin"></span></a> Entrada asociada, no se puede borrar<br />
-          <a href="#"><span class="glyphicon glyphicon-remove-sign"></span></a> Entrada sin registros asociados
+          <a href="#"><span class="glyphicon glyphicon-pushpin"></span></a> Entrada asociada, <strong>NO se puede borrar</strong><br />
+          <a href="#"><span class="glyphicon glyphicon-remove-sign"></span></a> Entrada sin registros asociados, <strong>se puede borrar</strong><hr />
+          <a href="#"><span class="glyphicon glyphicon-remove"></span></a> Entrada asociada, <strong>se puede borrar</strong>
         </td>
       </tr>
     </table>
@@ -54,18 +55,24 @@
           {% endif %}
           <div class="clearfix"></div>
         </td>
-        <!--td>{#
-          <a href="{# { path( 'blog_delete_category', { 'id': category.id } ) } #}">
-            {# % if category.entries | length > 0 % #}
+        <td>
+          <a href="{{ path( 'blog_delete_entry', { 'id': entry.id } ) }}">
+            {% if entry.entryTag | length > 0 %}
               {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
               <span class="glyphicon glyphicon-pushpin"></span>
-            {# % else % #}
+            {% else %}
               {# El categoría NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar category #}
               <span class="glyphicon glyphicon-remove-sign"></span>
-            {# % endif % #}
-          </a>#}
+            {% endif %}
+          </a>
         </td>
         <td>
+          <a href="{{ path( 'blog_delete_with_tags_entry', { 'id': entry.id } ) }}">
+             {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </td>
+        <!--td>
           <a href="{#{ path( 'blog_edit_category', { 'id': category.id } ) }#}">
             <span class="glyphicon glyphicon-edit"></span>
           </a>
