@@ -26,11 +26,14 @@ class EntryController extends Controller
       #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
       $em = $this -> getDoctrine() -> getManager();                              # Hacemos uso del Manejador de Entidades de Doctrine
       $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );             # Accedemos al repositorio
+      $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );       # Accedemos al repositorio
       $entries = $entryRepository -> findAll();
+      $categories = $categoryRepository -> findAll();
 
       # Despliega la vista y le pasa parámetros a la misma
       return $this -> render( 'BlogBundle:Entry:index.html.twig', array(
-        'entries' => $entries
+        'entries'    => $entries,
+        'categories' => $categories
       ));
     }
 

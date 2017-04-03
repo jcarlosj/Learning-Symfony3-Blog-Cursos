@@ -4,9 +4,12 @@
    deberíamos escribir que se extiende o hereda de la siguiente manera:
       extends 'BlogBundle:Default:layout.html.twig'
 #}
+{% block menu %}
+  {% include 'BlogBundle:Category:menu.categories.html.twig' with { 'categories': categories } %}
+{% endblock %}
 {% block content %}
   <div class="col-lg-8">
-    <h2>Listado de categorías</h2>
+    <h2>Listado de entradas</h2>
     {# Despliega botón para agregar mas etiquetas y las convenciones de los iconos #}
     <table class="table">
       <tr>
