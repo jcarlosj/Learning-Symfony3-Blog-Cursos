@@ -65,3 +65,7 @@ blog_delete_entry:
 blog_delete_with_tags_entry:
     path:     /entries/delete-with-tags/{id}
     defaults: { _controller: BlogBundle:Entry:deleteWithTags }
+
+blog_edit_entry:
+    path:     /entries/edit/{id}
+    defaults: { _controller: BlogBundle:Entry:edit }

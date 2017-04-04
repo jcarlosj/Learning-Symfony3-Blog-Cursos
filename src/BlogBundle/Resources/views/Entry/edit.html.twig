@@ -1,0 +1,34 @@
+{# Heredamos la plantilla indicandole que se encuentra en: src\BlogBundle\Resources\views #}
+{% extends 'BlogBundle::layout.html.twig' %}
+{# Si quisieramos indicarle que se encuentra en: src\BlogBundle\Resources\views\Default
+   deberíamos escribir que se extiende o hereda de la siguiente manera:
+      extends 'BlogBundle:Default:layout.html.twig'
+#}
+{% block content %}
+  <div class="col-lg-6">
+    <h2>Editar entrada</h2>
+    <h3>{{ entry .title }}</h3>
+    {# Despliega los mensajes de error (Que se encuentran en la variable de SESION del Framework) #}
+    {% for message in app.session.flashbag().get( 'status' ) %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+    {{ form_start( form_entry, { 'enctype': 'multipart/form-data' } ) }}    {# Agrega ficheros al formulario (imagen) #}
+      {# Despliega la imagen #}
+      <p class="pull-left">
+        <label for="preview-image">Imagén:</label>
+        <img id="preview-image" style="width: 250px; margin-right: 8px; margin-bottom: 2px;" src="
+          {% if entry.image %}
+            {{ asset( 'uploads/'~entry.image ) }}
+          {% else %}
+            {{ asset( 'uploads/imagen-no-disponible.png' ) }}
+          {% endif %}
+        " alt="{{ entry.title }}" />
+      </p>
+      {{ form_widget( form_entry .image ) }}
+      {# FIN - Imagen #}
+    {{ form_end( form_entry ) }}
+  </div>
+  <div class="clearfix"></div>
+{% endblock %}

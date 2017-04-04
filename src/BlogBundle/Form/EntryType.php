@@ -50,7 +50,8 @@ class EntryType extends AbstractType
               'label' => 'Imagen',                             # Nombre etiqueta
               'attr'  => array(                                # Atributos del tag
                 'class' => 'form-imagen form-control'          # Clase CSS
-              )
+              ),
+              'data_class' => null                             # No exigirá que sea un fichero (archivo) 
             ))
             -> add( 'category', EntityType :: class, array(    # Nombre y tipo (Entity: Tipo para consultar la entidad y rellenar por ejemplo un selector)
               'label' => 'Categoría',                          # Nombre etiqueta

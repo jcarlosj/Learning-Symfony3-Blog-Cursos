@@ -263,11 +263,12 @@ class EntryController extends Controller
 
           # Guardamos los datos dentro de la entidad del ORM Doctrine
           #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
-          $em = $this -> getDoctrine() -> getManager();                              # Hacemos uso del Manejador de Entidades de Doctrine
-          $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );       # Accedemos al repositorio
-          $category = $categoryRepository -> find( $id );
+          $em = $this -> getDoctrine() -> getManager();                           # Hacemos uso del Manejador de Entidades de Doctrine
+          # Extraemos datos del repositorio de la entidad Entry
+          $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );          # Accedemos al repositorio
+          $entry = $entryRepository -> find( $id );
 
-          $form = $this -> createForm( CategoryType :: class, $category );        # Crea el formulario (hace un SetData al formulario pues lo muestra
+          $form = $this -> createForm( EntryType :: class, $entry );              # Crea el formulario (hace un SetData al formulario pues lo muestra
                                                                                   # con los datos en cada uno de los campos del la respectiva categoria )
 
           # Hacemos un Binding (Unión de la entidad con el formulario), así los datos
@@ -281,51 +282,71 @@ class EntryController extends Controller
               # Validación del formulario
               if( $form -> isValid() ) {
                 # En caso de que el formulario no sea valido las variables deben tener los valores enviados en el formulario
-                $status = $this -> edit( $form, $category );
+                $status = $this -> edit( $id, $form, $entry, $entryRepository );
               }
               else {
                 # En caso de que el formulario no sea valido las variables deben ser nulas
-                $status = 'No ha registrado la categoría correctamente';
+                $status = 'No ha registrado la entrada correctamente';
               }
 
               # Metemos el mensaje en una session de tipo Flash de Symphony
               $this -> session -> getFlashBag() -> add( 'status', $status );
 
               # Redireccionamos a la ruta que nos llevará al listado de tags
-              return $this -> redirectToRoute( 'blog_index_category' );
+              return $this -> redirectToRoute( 'blog_homepage' );
           } # --- IMPLEMENTA VALIDACION  --- (Fin)
-
 
         }
 
         # Despliega la vista y le pasa parámetros a la misma
-        return $this -> render( 'BlogBundle:Category:edit.html.twig', array(
-          'form_category' => $form -> createView()
+        return $this -> render( 'BlogBundle:Entry:edit.html.twig', array(
+          'form_entry' => $form -> createView(),
+          'entry'      => $entry
         ));
     }
 
-    public function edit( $form, $category ) {
+    private function edit( $id, $form, $entry, $entryRepository ) {
 
-        $category -> setName( $form -> get( 'name' ) -> getData() );
-        $category -> setDescription( $form -> get( 'description' ) -> getData() );
+      # Guardamos los datos dentro de la entidad del ORM Doctrine
+      #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+      $em = $this -> getDoctrine() -> getManager();
 
-        # Guardamos los datos dentro de la entidad del ORM Doctrine
-        #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
-        $em = $this -> getDoctrine() -> getManager();
-        $em -> persist( $category );
+      $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
+      $category = $categoryRepository -> find( $id );
 
-        # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
-        $flush = $em -> flush();
+      # Set fields
+      $entry -> setTitle( $form -> get( 'title' ) -> getData() );
+      $entry -> setContent( $form -> get( 'content' ) -> getData() );
+      $entry -> setStatus( $form -> get( 'status' ) -> getData() );
+      $entry -> setImage( $this -> uploadFileImage( $form ) );          # Subimos, guardamos la imagen y su nombre en la BD
+      $entry -> setCategory(
+          # Obtenemos el objeto específico seleccionado buscandolo por su ID dentro del repositorio de la entidad
+          $categoryRepository -> find(
+            $form -> get( 'category' ) -> getData()   # Objeto seleccionado en el Choice (select)
+          )
+      );
+      $entry -> setUser(
+        $this -> getUser()                            # Obtenemos el usuario de la sesion
+      );
 
-        # Validamos si el registro se ha realizado con éxito
-        if( $flush == null ) {
-          $message = 'La categoría se ha eliminado correctamente';
-        }
-        else {
-          $message = 'No has eliminado la categoría correctamente ';
-        }
+      # Persistencia
+      $em -> persist( $entry );
 
-        return $message;
+      # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
+      $flush = $em -> flush();
+
+      # Guarda las etiquetas asociadas a la entrada
+      $entryRepository -> addEntryTags( $entry, $form -> get( 'tags' ) -> getData() );
+
+      # Validamos si el registro se ha realizado con éxito
+      if( $flush == null ) {
+        $message = 'La entrada se ha modificado correctamente';
+      }
+      else {
+        $message = 'No has modificado la entrada correctamente ';
+      }
+
+      return $message;
     }
 
 }
