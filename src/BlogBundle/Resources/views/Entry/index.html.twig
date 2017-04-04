@@ -45,6 +45,7 @@
           </p>
           <p><strong style="font-size: 11px;">Nombre de la entrada</strong><br /> {{ entry.title }}</p>
           <p><strong style="font-size: 11px;">Categoría</strong><br /> {{ entry.category }}</p>
+          <p><strong style="font-size: 11px;">Autor</strong><br /> {{ entry.user.name }}</p>
           <p><strong style="font-size: 11px;">Contenido</strong><br /> {{ entry.content }}</p>
           {% if entry.entryTag | length > 0 %}
           <p><strong style="font-size: 11px;">Etiquetas</strong><br />
@@ -55,23 +56,29 @@
           {% endif %}
           <div class="clearfix"></div>
         </td>
-        <td>
-          <a href="{{ path( 'blog_delete_entry', { 'id': entry.id } ) }}">
-            {% if entry.entryTag | length > 0 %}
-              {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
-              <span class="glyphicon glyphicon-pushpin"></span>
-            {% else %}
-              {# El categoría NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar category #}
-              <span class="glyphicon glyphicon-remove-sign"></span>
-            {% endif %}
-          </a>
-        </td>
-        <td>
-          <a href="{{ path( 'blog_delete_with_tags_entry', { 'id': entry.id } ) }}">
-             {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
-            <span class="glyphicon glyphicon-remove"></span>
-          </a>
-        </td>
+        {#
+           Validamos si el id de usuario esta definido en la variable de sesión Y
+           validamos si el ID de usuario de las entradas es igual al ID del usuario
+           que se encuentra en la sesión #}
+        {% if ( app.user.id is defined ) and ( entry.user.id == app.user.id ) %}
+          <td>
+            <a href="{{ path( 'blog_delete_entry', { 'id': entry.id } ) }}">
+              {% if entry.entryTag | length > 0 %}
+                {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
+                <span class="glyphicon glyphicon-pushpin"></span>
+              {% else %}
+                {# El categoría NO esta en uso por que el número de registros es cero, entonces mostramos la ópción de eliminar category #}
+                <span class="glyphicon glyphicon-remove-sign"></span>
+              {% endif %}
+            </a>
+          </td>
+          <td>
+            <a href="{{ path( 'blog_delete_with_tags_entry', { 'id': entry.id } ) }}">
+               {# El categoría esta en uso por que el número de registros asociados es mayor a cero #}
+              <span class="glyphicon glyphicon-remove"></span>
+            </a>
+          </td>
+        {% endif %}{# - FIN (Botones eliminar) #}
         <!--td>
           <a href="{#{ path( 'blog_edit_category', { 'id': category.id } ) }#}">
             <span class="glyphicon glyphicon-edit"></span>
