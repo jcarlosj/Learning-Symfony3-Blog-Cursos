@@ -205,23 +205,12 @@ class EntryController extends Controller
         #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
         $em = $this -> getDoctrine() -> getManager();                                # Hacemos uso del Manejador de Entidades de Doctrine
         $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );               # Accedemos al repositorio
-        $entryTagsRepository = $em -> getRepository( 'BlogBundle:EntryTag' );        # Accedemos al repositorio
         $entry = $entryRepository -> find( $id );                                    # Busca el id
-        $entryTags = $entryTagsRepository -> findBy( array( 'entry' => $entry ) );   # Busca todos registros asociados a las entradas que se le pasan
 
-        # Elimina cada una de las etiquetas de la entrada que estan asociadas
-        foreach ( $entryTags as $entrytag ) {
-          if( is_object( $entrytag ) ) {      # Funciona como un isset preguntando si es un objeto
-            # Como el tag NO tiene REGISTROS asociados se puede eliminar
-            # Si el tag TIENE REGISTROS asociados NO se puede eliminar
-            $em -> remove( $entrytag );
-            # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
-            $flush = $em -> flush();
+        $resultDelete = $this -> deleteEntryTags( $id );
 
-            $status_tag = 'y las etiquetas asociadas ';
-            $flag_tags = true;
-          }
-        }
+        $status_tag = $resultDelete[ 'status_tag' ];
+        $flag_tags  = $resultDelete[ 'flag_tags' ];
 
         # Elimina las entradas
         # Como el tag NO tiene REGISTROS asociados se puede eliminar
@@ -242,6 +231,40 @@ class EntryController extends Controller
       $this -> session -> getFlashBag() -> add( 'status', $status );
 
       return $this -> redirectToRoute( 'blog_homepage' );
+    }
+
+    # Elimina las etiquetas de una entrada específica
+    private function deleteEntryTags( $id ) {
+      # Guardamos los datos dentro de la entidad del ORM Doctrine
+      #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
+      $em = $this -> getDoctrine() -> getManager();                                # Hacemos uso del Manejador de Entidades de Doctrine
+
+      $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );               # Accedemos al repositorio
+      $entryTagsRepository = $em -> getRepository( 'BlogBundle:EntryTag' );        # Accedemos al repositorio
+      $entry = $entryRepository -> find( $id );                                    # Busca el id
+      $entryTags = $entryTagsRepository -> findBy( array( 'entry' => $entry ) );   # Busca todos registros asociados a las entradas que se le pasan
+
+      # Elimina cada una de las etiquetas de la entrada que estan asociadas
+      foreach ( $entryTags as $entrytag ) {
+        if( is_object( $entrytag ) ) {      # Funciona como un isset preguntando si es un objeto
+          # Como el tag NO tiene REGISTROS asociados se puede eliminar
+          # Si el tag TIENE REGISTROS asociados NO se puede eliminar
+          $em -> remove( $entrytag );
+          # Volcamos los cambios de la entidad del ORM Doctrine a la base de datos
+          $flush = $em -> flush();
+
+          $status_tag = 'y las etiquetas asociadas ';
+          $flag_tags = true;
+        }
+        else {
+          $flag_tags = false;
+        }
+      }
+
+      return array(
+        'status_tag' => $status_tag,
+        'flag_tags' => $flag_tags
+      );
     }
 
     # ACCION: Editar Categoria
@@ -267,6 +290,8 @@ class EntryController extends Controller
           # Extraemos datos del repositorio de la entidad Entry
           $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );          # Accedemos al repositorio
           $entry = $entryRepository -> find( $id );
+
+          $tagChain = $this -> getStringTags( $entry );                           # Obtiene todas las etiquetas en una sola cadena separada por comas
 
           $form = $this -> createForm( EntryType :: class, $entry );              # Crea el formulario (hace un SetData al formulario pues lo muestra
                                                                                   # con los datos en cada uno de los campos del la respectiva categoria )
@@ -301,24 +326,26 @@ class EntryController extends Controller
         # Despliega la vista y le pasa parámetros a la misma
         return $this -> render( 'BlogBundle:Entry:edit.html.twig', array(
           'form_entry' => $form -> createView(),
-          'entry'      => $entry
+          'entry'      => $entry,
+          'tag_chain'  => $tagChain
         ));
     }
 
     private function edit( $id, $form, $entry, $entryRepository ) {
-
       # Guardamos los datos dentro de la entidad del ORM Doctrine
       #   NOTA: hasta la v3.0.0 usar getEntityManager() / v3.0.6 o superior usar getManager()
       $em = $this -> getDoctrine() -> getManager();
 
       $categoryRepository = $em -> getRepository( 'BlogBundle:Category' );    # Accedemos al repositorio
       $category = $categoryRepository -> find( $id );
+      $entryRepository = $em -> getRepository( 'BlogBundle:Entry' );          # Accedemos al repositorio
+      $entry = $entryRepository -> find( $id );                               # Busca el id
 
       # Set fields
       $entry -> setTitle( $form -> get( 'title' ) -> getData() );
       $entry -> setContent( $form -> get( 'content' ) -> getData() );
       $entry -> setStatus( $form -> get( 'status' ) -> getData() );
-      $entry -> setImage( $this -> uploadFileImage( $form ) );          # Subimos, guardamos la imagen y su nombre en la BD
+      $entry -> setImage( $this -> uploadFileImage( $form ) );                 # Subimos, guardamos la imagen y su nombre en la BD
       $entry -> setCategory(
           # Obtenemos el objeto específico seleccionado buscandolo por su ID dentro del repositorio de la entidad
           $categoryRepository -> find(
@@ -335,6 +362,9 @@ class EntryController extends Controller
       # Volcamos los datos contenidos en la entidad del ORM Doctrine a la base de datos
       $flush = $em -> flush();
 
+      # Elimina todas las entradas actuales
+      $this -> deleteEntryTags( $id );
+
       # Guarda las etiquetas asociadas a la entrada
       $entryRepository -> addEntryTags( $entry, $form -> get( 'tags' ) -> getData() );
 
@@ -347,6 +377,18 @@ class EntryController extends Controller
       }
 
       return $message;
+    }
+
+    # Convierte un Array de etiquetas en una Cadena de etiquetas separadas por comas.
+    private function getStringTags( $entry ) {
+
+      $tags = '';
+
+      foreach ( $entry -> getEntryTag() as $entryTag ) {
+        $tags .= $entryTag -> getTag() -> getName(). ', ';
+      }
+
+      return $tags;
     }
 
 }

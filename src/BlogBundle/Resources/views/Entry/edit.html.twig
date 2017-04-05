@@ -28,6 +28,12 @@
       </p>
       {{ form_widget( form_entry .image ) }}
       {# FIN - Imagen #}
+      <label for="tags">Etiquetas</label>
+      {# Desplegamos las etiquetas como una cadena separadas por comas (,) y
+         Quitamos los espacios y la última coma que trae la cadena #}
+      {{ form_widget( form_entry .tags, {
+        'value': tag_chain | trim ( ' ' ) | trim ( ',' )
+      } ) }}
     {{ form_end( form_entry ) }}
   </div>
   <div class="clearfix"></div>
